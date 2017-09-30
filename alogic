@@ -1,0 +1,44 @@
+#!/bin/bash
+# *******************************************************************************
+# Argon Design Ltd. Project P8009 Alogic
+# (c) Copyright 2017 Argon Design Ltd. All rights reserved.
+#
+# Module : afiddle
+# Author : Steve Barlow
+# $Id:$
+#
+# DESCRIPTION:
+# Install / update / run alogic compiler
+# *******************************************************************************
+
+THIS_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ALOGIC_DIR=$THIS_SCRIPT_DIR/alogic_install
+ALOGIC_REMOTE="https://github.com/ArgonDesign/alogic.git"
+
+update () {
+  echo "$@"
+  set -e
+  local REF=$1; [[ -n $REF ]] || REF=master
+  if [[ ! -e "$ALOGIC_DIR" ]]; then
+    mkdir -p "$ALOGIC_DIR"
+    cd "$ALOGIC_DIR"
+    git clone "$ALOGIC_REMOTE" "$ALOGIC_DIR"
+  else
+    cd "$ALOGIC_DIR"
+  fi
+  git fetch origin $REF
+  git checkout -q -f origin/$REF
+  git clean -q -f -d -x
+  sbt -batch stage
+  exit 0
+}
+
+case $1 in
+update) shift && update "$@" ;;
+esac
+
+if [[ ! -e "$ALOGIC_DIR" ]]; then
+  error "Alogic compiler is not installed. Run 'alogic update'."
+fi
+
+$ALOGIC_DIR/target/universal/stage/bin/alogic "$@"

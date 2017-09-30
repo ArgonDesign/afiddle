@@ -1,0 +1,24 @@
+// *****************************************************************************
+// Argon Design Ltd. Project P8009 Alogic
+// (c) Copyright 2017 Argon Design Ltd. All rights reserved.
+//
+// Module : afiddle
+// Author : Steve Barlow
+// $Id:$
+//
+// DESCRIPTION:
+// Example Alogic file with syntax error.
+// *****************************************************************************
+
+fsm add {
+  in sync rezzzady u8 p_in;
+  in u8 addend;
+
+  out sync ready u8 p_out;
+
+  void main() {
+    u8 sum = p_in.read() + addend;
+    p_out.write(sum);
+    fence;
+  }
+}

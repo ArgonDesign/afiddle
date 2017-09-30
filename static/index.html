@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!--
+********************************************************************************
+Argon Design Ltd. Project P8009 Alogic
+(c) Copyright 2017 Argon Design Ltd. All rights reserved.
+
+Module : afiddle
+Author : Steve Barlow
+$Id:$
+
+DESCRIPTION:
+Web page HTML.
+********************************************************************************
+-->
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Alogic Fiddle</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="golden-layout/src/css/goldenlayout-base.css" />
+    <link rel="stylesheet" href="golden-layout/src/css/goldenlayout-light-theme.css" />
+    <script data-main="js/index.js" src="requirejs/require.js"></script>
+</head>
+
+<body>
+    <div class="header">
+        <h2>Alogic Fiddle</h2>
+        <table>
+            <tr>
+                <td>
+                    <input id="compileButton" type="button" value="Compile" />
+                </td>
+                <td>
+                    <p id="compileStatus"></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="maincontent">
+        <div id="root">
+        </div>
+    </div>
+    
+    <div class="footer">
+        <hr>
+        <table>
+            <tr>
+                <td class="footerLeft">
+                    <a href="http://www.argondesign.com" target="_blank">
+                            <img src="images/argon_logo_footer.jpg" alt="Argon Design"/>
+                    </a>
+                </td>
+                <td class="footerRight">
+                    <p>&copy 2017 Argon Design Ltd. All rights reserved. <a href='privacy'>Privacy & Legal</a></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+
+</html>

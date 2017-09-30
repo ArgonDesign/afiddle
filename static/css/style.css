@@ -1,0 +1,69 @@
+/*****************************************************************************
+Argon Design Ltd. Project P8009 Alogic
+(c) Copyright 2017 Argon Design Ltd. All rights reserved.
+
+Module : afiddle
+Author : Steve Barlow
+$Id:$
+
+DESCRIPTION:
+Web page CSS.
+*******************************************************************************/
+
+/* General CSS */
+
+body {
+    width:90%;
+    font-family:Tahoma, Arial, Helvetica, sans-serif;
+    font-size:11pt;
+    margin:0 auto;
+    background-color:white;
+}
+
+/* Header */
+
+div.header {
+    color:#ffffff;
+    font-size:12pt;
+    background-color:#2198db;
+    padding:5px;
+    margin-bottom:10px;
+}
+div.header h2 {
+    font-weight:normal;
+    margin-top:0px;
+    margin-bottom:10px;
+}
+div.header table {
+    width:100%;
+    border-collapse:collapse;
+}    
+div.header td {
+    padding:0px;
+}
+div.header p {
+    margin:0px;
+}
+
+/* Footer */
+
+div.footer {
+    padding-top:20px;
+    color:gray;
+    font-size:9pt;
+}
+div.footer table {
+    width:100%;
+    border-collapse:collapse;
+}    
+div.footer td {
+    vertical-align:top;
+    padding:0px;
+}
+div.footer p {
+    margin:0px;
+}
+td.footerRight {
+    text-align:right;
+}
+

@@ -1,0 +1,29 @@
+{
+  "name": "afiddle",
+  "version": "1.0.0",
+  "description": "A JSFiddle like tool for the Alogic mid-level hardware design language.",
+  "author": "Steve Barlow",
+  "license": "BSD-3-Clause-Attribution",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArgonDesign/afiddle/"
+  },
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "bower": "^1.8.2",
+    "express": "^4.15.4",
+    "fs-extra": "^4.0.2",
+    "monaco-editor": "^0.10.0",
+    "morgan": "^1.9.0",
+    "path": "^0.12.7",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
+    "standard": "^10.0.3"
+  }
+}
