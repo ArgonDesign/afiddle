@@ -35,14 +35,14 @@ Once built, the server can be run by executing *app.js*, either with `./app.js`,
 
 The server uses a directory `runpen` to store user-entered code in files for the Alogic compiler to work on. There is also a directory `logs` for log files. The locations of these directories and the port that the server uses can be set by constants at the top of the apps.js file.
 
-Endpoints
----------
+Webserver Endpoints
+-------------------
 
-The main server endpoint is `\`. This serves the HTML for the page which pulls in the CSS and Javascript code.
+The main server endpoint is `/`. This serves the HTML for the page which pulls in the CSS and Javascript code.
 
-The endpoint `\compile` is used to submit an Alogic file for compilation. The client side code POSTs to this with the Alogic source. The data type must be `text/alogic`. The server responds with text which is either the Verilog results or a list of errors. In either case the results are suitable to be directly displayed in the right-hand-side fiddle window. If the compilation generates multiple Verilog files, they are concatenated with a ==>FILENAME<== before each file, in the same way as `tail`.
+The endpoint `/compile` is used to submit an Alogic file for compilation. The client side code POSTs to this with the Alogic source. The data type must be `text/alogic`. The server responds with text which is either the Verilog results or a list of errors. In either case the results are suitable to be directly displayed in the right-hand-side fiddle window. If the compilation generates multiple Verilog files, they are concatenated with a ==>FILENAME<== before each file, in the same way as `tail`.
 
-The endpoint `\privacy` serves a web page with privacy information.
+The endpoint `/privacy` serves a web page with privacy information.
 
 Tour of Files
 -------------
@@ -65,8 +65,8 @@ Directories created during installation and in operation:
 
 | Directory/file   | Description |
 |------------------|-------------|
-|node_modules\     | Node.js packages used by server |
-|bower_components\ | Javascript libraries used by client-side code |
-|alogic_install\   | Directory where the Alogic compiler is installed |
-|runpen\           | Directory used to store source files entered in the web page so they can be compiled by the Alogic compiler. Each compile request creates a new directory with a 4-digit number, such as `0002`; the number increments with each request. Within this the server  creates an `alogic` subdirectory and a `verilog` subdirectory. The source code is then stored as `input.alogic` in the `alogic` directory. Once the compilation is completed, the numbered directory is deleted |
-|logs\             | Server log files. Logs are stored in a 5-file rotating sequence. |
+|node_modules/     | Node.js packages used by server |
+|bower_components/ | Javascript libraries used by client-side code |
+|alogic_install/   | Directory where the Alogic compiler is installed |
+|runpen/           | Directory used to store source files entered in the web page so they can be compiled by the Alogic compiler. Each compile request creates a new directory with a 4-digit number, such as `0002`; the number increments with each request. Within this the server  creates an `alogic` subdirectory and a `verilog` subdirectory. The source code is then stored as `input.alogic` in the `alogic` directory. Once the compilation is completed, the numbered directory is deleted |
+|logs/             | Server log files. Logs are stored in a 5-file rotating sequence. |
