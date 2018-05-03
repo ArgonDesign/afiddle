@@ -14,6 +14,8 @@
 // Useful websites:
 // https://github.com/ArgonDesign/alogic
 // https://github.com/mattgodbolt/compiler-explorer
+// https://expressjs.com/en/4x/api.html
+// https://codigo.co.uk/blog/post/expressjs-and-moustache
 // https://stackoverflow.com/questions/20643470/execute-a-command-line-binary-with-node-js
 // http://exploringjs.com/es6/ch_promises.html
 // https://stackoverflow.com/questions/40175657/stop-promise-chain-with-multiple-catches
@@ -23,6 +25,7 @@
 
 // External modules used
 const express = require('express')
+const mustacheExpress = require('mustache-express')
 const bodyParser = require('body-parser')
 const fs = require('fs-extra')
 const childProcess = require('child_process')
@@ -73,6 +76,27 @@ function exec (cmd) {
   })
 }
 
+// Find the entity name in an alogic module. The module text is passed as a string
+// in code. Returns the name or if it can't be found, returns null.
+function extractEntityName (code) {
+  // Remove //... comments
+  var tokens = code.replace(/\/\/.*\n/g, '')
+    // Remove /*...*/ comments
+    .replace(/\/\*[^*]*\*\//g, '')
+    // Replace all whitespace with space
+    .replace(/\s/g, ' ')
+    // Tokenise
+    .trim().split(' ')
+  // Get second token
+  var name = tokens[1]
+  // Check name starts with an alphabetic, _ or $ and contains only alphanumerics, _ or $
+  if (name.match(/^[A-Za-z_$][A-Za-z0-9_$]*$/) != null) {
+    return name
+  } else {
+    return null
+  }
+}
+
 // -----------------------------------------------------------------------------
 // Setup for logging
 
@@ -116,9 +140,13 @@ const app = express()
 // Using :req[X-Forwarded-For] rather than :remote-addr so correctly logs IP addresses when used via ngrok
 app.use(morgan(':req[X-Forwarded-For] :method :url :status :response-time ms', { 'stream': logger.stream }))
 
-app.use(express.static('static'))
-app.use(express.static('node_modules'))
-app.use(express.static('bower_components'))
+app.use(express.static(path.join(__dirname, 'static')))
+app.use(express.static(path.join(__dirname, 'node_modules')))
+app.use(express.static(path.join(__dirname, 'bower_components')))
+
+app.engine('mustache', mustacheExpress())
+app.set('view engine', 'mustache')
+app.set('views', path.join(__dirname, 'views'))
 
 app.use(bodyParser.text({ type: 'text/alogic' }))
 
@@ -127,11 +155,21 @@ var runNum = 0
 
 const ALOGIC = path.join(__dirname, 'alogic')
 
+// Get Alogic version string
+var alogicVersion
+exec(ALOGIC + ' --version')
+  .then(function (std) {
+    alogicVersion = std.stdout
+      // Limit to 12 characters
+      .slice(0, 12)
+  }
+)
+
 //
 // *** ENDPOINT '/' - Serve main HTML page
 //
 app.get('/', function (req, res) {
-  res.sendFile('static/index.html', { root: __dirname })
+  res.render('index', { version: alogicVersion })
 })
 
 //
@@ -151,12 +189,13 @@ app.get('/', function (req, res) {
 // Test with curl http://localhost:8000/compile -H content-type:text/alogic --data-binary @test/foo.alogic
 //
 app.post('/compile', function (req, res) {
-  var dir, srcDir, destDir, srcFile
+  var entity, dir, srcDir, destDir, srcFile
   // req.body is {} if the content-type is not recognised so the content couldn't be parsed
   if (isEmpty(req.body)) {
     res.sendStatus(415) // Unsupported media type
   } else {
     logger.log('verbose', 'request:\n' + req.body.trim())
+    entity = extractEntityName(req.body) || 'unknown'
     dir = path.join(RUNPENDIR, pad(runNum, 4))
     runNum += 1
     fs.mkdir(dir)
@@ -169,23 +208,23 @@ app.post('/compile', function (req, res) {
       return fs.mkdir(destDir)
     })
     .then(function () {
-      srcFile = path.join(srcDir, 'input.alogic')
+      srcFile = path.join(srcDir, entity + '.alogic')
       return fs.writeFile(srcFile, req.body)
     })
     .then(function () {
-      return exec(ALOGIC + ' -o ' + destDir + ' ' + srcDir)
+      return exec(ALOGIC + ' -o ' + destDir + ' -y ' + srcDir + ' ' + entity)
       .then(function (std) {
         // Compile success. Results are in files in destDir
         return 'success'
       })
       .catch(function (error) {
-        // alogic compiler reports errors on stdout, rather than stderr
-        var errorMessages = error.stdout
-        // Tidy up path shown in error messages. Convert output like
-        // /home/sjb/P8009_Alogic/afiddle/runpen/0000/alogic/input.alogic:2: ERROR: ...
-        // to input.alogic:2: ERROR: ...
-        var errorMessages1 = errorMessages.replace(/^.*[/]runpen[/]\d\d\d\d[/]alogic[/]/g, '')
-        return errorMessages1
+        // alogic compiler reports errors on stderr
+        var errorMessages = error.stderr
+          // Tidy up path shown in error messages. Convert output like
+          // /home/sjb/P8009_Alogic/afiddle/runpen/0000/alogic/input.alogic:2: ERROR: ...
+          // to input.alogic:2: ERROR: ...
+          .replace(/^.*[/]runpen[/]\d\d\d\d[/]alogic[/]/g, '')
+        return errorMessages
       })
     })
     .then(function (result) {
@@ -196,7 +235,7 @@ app.post('/compile', function (req, res) {
           return std.stdout
         })
       } else {
-        return 'Compilation errors occured:\n' + result
+        return 'Compilation errors occurred:\n' + result
       }
     })
     .then(function (result) {

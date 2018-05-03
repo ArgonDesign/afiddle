@@ -49,8 +49,9 @@ Tour of Files
 
 | Directory/file   | Description |
 |------------------|-------------|
-|static/           | Static files served to the client. Contains HTML files and subdirectories for `css`, `images` and `js` files. Look particularly at the main page HTML, `index.html` and the main client-side Javascript, `js/index.js` |
+|static/           | Static files served to the client. Contains static HTML files and subdirectories for `css`, `images` and `js` files. Look particularly at the main client-side Javascript, `js/index.js` |
 |test/             | Short Alogic files used in testing |
+|views/            | Contains main page HTML template `index.mustache` |
 |alogic*           | Script to run Alogic compiler. Also used as `./alogic update` to install/update Alogic from Github |
 |app.js            | Main code of afiddle server |
 |bower.json        | Control file for `bower` which installs/updates client side Javascript libraries. Contains the names and version numbers of all the libraries used. Libraries are downloaded to the directory `bower_components`.

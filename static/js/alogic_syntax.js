@@ -77,7 +77,7 @@ define({
 
         // identifiers and keywords
         [ /@shortTypeKeywords/, 'type' ],
-        [ /[A-Za-z_$]+/, { cases: { '@typeKeywords': 'type',
+        [ /[A-Za-z_$][A-Za-z0-9_$]*/, { cases: { '@typeKeywords': 'type',
           '@keywords': 'keyword',
           '@default': 'identifier' } } ],
 

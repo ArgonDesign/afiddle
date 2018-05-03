@@ -18,7 +18,7 @@ ALOGIC_REMOTE="https://github.com/ArgonDesign/alogic.git"
 update () {
   echo "$@"
   set -e
-  local REF=$1; [[ -n $REF ]] || REF=master
+  local REF=$1; [[ -n $REF ]] || REF=3.0.x
   if [[ ! -e "$ALOGIC_DIR" ]]; then
     mkdir -p "$ALOGIC_DIR"
     cd "$ALOGIC_DIR"

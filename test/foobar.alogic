@@ -10,7 +10,7 @@
 // Example Alogic file with syntax error.
 // *****************************************************************************
 
-fsm add {
+fsm foobar {
   in sync rezzzady u8 p_in;
   in u8 addend;
 

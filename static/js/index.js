@@ -16,7 +16,7 @@
 // https://github.com/Microsoft/monaco-editor
 // https://stackoverflow.com/questions/38086013/get-the-value-of-monaco-editor
 // https://github.com/Microsoft/monaco-editor/issues/54
-// https://github.com/Microsoft/monaco-editor-samples/blob/master/sample-monarch/index.html
+// https://github.com/Microsoft/monaco-editor-samples/blob/master/browser-amd-editor/index.html
 
 // Tell Standard about globals so it doesn't give lint errors
 /* global monaco */
@@ -73,7 +73,7 @@ require(['jquery', 'goldenlayout', 'vs/editor/editor.main'], function ($, Golden
     // (a) File separator
     verilogSyntax.monarchDefinition.tokenizer.root.unshift([/==>[^<]+<==/, 'constant'])
     // (b) Output is an error list, not Verilog
-    verilogSyntax.monarchDefinition.tokenizer.root.unshift([/Compilation errors occured:/, {token: 'invalid', next: '@errors'}])
+    verilogSyntax.monarchDefinition.tokenizer.root.unshift([/Compilation errors occurred:/, {token: 'invalid', next: '@errors'}])
     verilogSyntax.monarchDefinition.tokenizer.errors = [[/./, 'invalid']]
     // (c) There is no output yet, just the initial message
     verilogSyntax.monarchDefinition.tokenizer.root.unshift([/Verilog code output here\.\.\./, 'attribute'])

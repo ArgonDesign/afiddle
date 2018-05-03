@@ -94,7 +94,7 @@ define({
     tokenizer: {
       root: [
         // identifiers and keywords
-        [ /[A-Za-z_$]+/, { cases: { '@preprocessorKeywords': 'type',
+        [ /[A-Za-z_$][A-Za-z0-9_$]*/, { cases: { '@preprocessorKeywords': 'type',
           '@keywords': 'keyword',
           '@builtinFunctionKeywords': 'predefined',
           '@default': 'identifier' } } ],
