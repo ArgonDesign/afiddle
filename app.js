@@ -79,12 +79,17 @@ function exec (cmd) {
 // Find the entity name in an alogic module. The module text is passed as a string
 // in code. Returns the name or if it can't be found, returns null.
 function extractEntityName (code) {
-  // Remove //... comments
-  var tokens = code.replace(/\/\/.*\n/g, '')
+  var tokens = code
+    // Concatenate continued lines
+    .replace(/\\\n/g, '')
+    // Remove //... comments
+    .replace(/[/][/].*\n/g, ' ')
     // Remove /*...*/ comments
-    .replace(/\/\*[^*]*\*\//g, '')
-    // Replace all whitespace with space
-    .replace(/\s/g, ' ')
+    .replace(/[/][*][^*]*[*][/]/g, ' ')
+    // Remove preprocessor lines
+    .replace(/(^|\n)\s*#[^\n]*/g, '')
+    // Replace all whitespace with a single space
+    .replace(/\s+/g, ' ')
     // Tokenise
     .trim().split(' ')
   // Get second token
@@ -160,8 +165,6 @@ var alogicVersion
 exec(ALOGIC + ' --version')
   .then(function (std) {
     alogicVersion = std.stdout
-      // Limit to 12 characters
-      .slice(0, 12)
   }
 )
 
@@ -223,7 +226,7 @@ app.post('/compile', function (req, res) {
           // Tidy up path shown in error messages. Convert output like
           // /home/sjb/P8009_Alogic/afiddle/runpen/0000/alogic/input.alogic:2: ERROR: ...
           // to input.alogic:2: ERROR: ...
-          .replace(/^.*[/]runpen[/]\d\d\d\d[/]alogic[/]/g, '')
+          .replace(/(^|\n).*[/]runpen[/]\d\d\d\d[/]alogic[/]/g, '')
         return errorMessages
       })
     })
