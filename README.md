@@ -38,7 +38,7 @@ The server uses a directory `runpen` to store user-entered code in files for the
 Webserver Endpoints
 -------------------
 
-The main server endpoint is `/`. This serves the HTML for the page which pulls in the CSS and Javascript code.
+The main server endpoint is `/`. This serves the HTML for the page, which pulls in the CSS and Javascript code. The example code in the source window prior to editing can be set by adding a query string. `/?example=<filename>` sets it from the file `examples/<filename>`. If no query string is present then the file `examples/defaultExample.alogic` is used.  
 
 The endpoint `/compile` is used to submit an Alogic file for compilation. The client side code POSTs to this with the Alogic source. The data type must be `text/alogic`. The server responds with text which is either the Verilog results or a list of errors. In either case the results are suitable to be directly displayed in the right-hand-side fiddle window. If the compilation generates multiple Verilog files, they are concatenated with a ==>FILENAME<== before each file, in the same way as `tail`.
 
@@ -49,6 +49,7 @@ Tour of Files
 
 | Directory/file   | Description |
 |------------------|-------------|
+|examples/         | Files that can be chosen as initial text in the source window |
 |static/           | Static files served to the client. Contains static HTML files and subdirectories for `css`, `images` and `js` files. Look particularly at the main client-side Javascript, `js/index.js` |
 |test/             | Short Alogic files used in testing |
 |views/            | Contains main page HTML template `index.mustache` |

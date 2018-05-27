@@ -1,0 +1,79 @@
+(* liftsrams *)
+fsm sfifo {
+  param u32 WIDTH = 8;
+  param u32 DEPTH = 2;
+
+  // Number of address bits
+  const u32 ABITS = $clog2(DEPTH);
+
+  // The input port
+  in  sync ready               uint(WIDTH) p_in;
+  // The output port
+  out sync ready bslice fslice uint(WIDTH) p_out;
+
+  // The full/empty status bits
+  bool full = false;
+  bool empty = true;
+
+  // The read and write pointers
+  uint(ABITS) rdptr = @zx(ABITS, 1'b0);
+  uint(ABITS) wrptr = @zx(ABITS, 1'b0);
+
+  // The highers valid poitner
+  const u32 MAXPTR = DEPTH - 1;
+
+  // The actual storage SRAM
+  sram wire uint(WIDTH) storage[DEPTH];
+
+  // Give priority to reads
+  const bool RDPRI = true;
+
+  // Marker noting a new datum is available on storage.rdata
+  bool rdavail = false;
+
+  fence {
+    // If read data is available, write it to the output port
+    if (rdavail) {
+      p_out.write(storage.rdata);
+    }
+  }
+
+  void main() {
+    // Check whether we can read or write this cycle
+    bool can_rd = !p_out.full && !empty;
+    bool can_wr = p_in.valid && !full;
+
+    // Arbitrate between read and write
+    bool rd = can_rd && ( RDPRI || !can_wr);
+    bool wr = can_wr && (!RDPRI || !can_rd);
+
+    // Do the read if required
+    if (rd) {
+      storage.read(rdptr);
+      rdptr = rdptr == MAXPTR[0 +: ABITS] ? @zx(ABITS, 1'b0)
+                                          : rdptr + @zx(ABITS, 1'b1);
+    }
+
+    // Do the write if required
+    if (wr) {
+      storage.write(wrptr, p_in.read());
+      wrptr = wrptr == MAXPTR[0 +: ABITS] ? @zx(ABITS, 1'b0)
+                                          : wrptr + @zx(ABITS, 1'b1);
+    }
+
+    // If we just did a read, mark there will be
+    // a read datum available on the next cycle
+    rdavail = rd;
+
+    // Check the pointers are equal
+    bool eq = rdptr == wrptr;
+
+    // full/empty only change if reading or writing on a cycle but not both
+    if (rd ^ wr) {
+      full = wr & eq;
+      empty = rd & eq;
+    }
+
+    fence;
+  }
+}

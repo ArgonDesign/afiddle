@@ -1,6 +1,6 @@
 // *****************************************************************************
 // Argon Design Ltd. Project P8009 Alogic
-// (c) Copyright 2017 Argon Design Ltd. All rights reserved.
+// (c) Copyright 2017-8 Argon Design Ltd. All rights reserved.
 //
 // Module : afiddle
 // Author : Steve Barlow
@@ -19,7 +19,7 @@
 // https://github.com/Microsoft/monaco-editor-samples/blob/master/browser-amd-editor/index.html
 
 // Tell Standard about globals so it doesn't give lint errors
-/* global monaco */
+/* global monaco, exampleText */
 
 require.config({
   baseUrl: '.',
@@ -83,20 +83,7 @@ require(['jquery', 'goldenlayout', 'vs/editor/editor.main'], function ($, Golden
 
   myLayout.registerComponent('alogicTextArea', function (container, state) {
     window.alogicEditor = monaco.editor.create(container.getElement()[0], {
-      value: [
-        'fsm add {',
-        '  in sync ready u8 p_in;',
-        '  in u8 addend;',
-        '',
-        '  out sync ready u8 p_out;',
-        '',
-        '  void main() {',
-        '    u8 sum = p_in.read() + addend;',
-        '    p_out.write(sum);',
-        '    fence;',
-        '  }',
-        '}'
-      ].join('\n'),
+      value: exampleText, // Example text to display is in global variable exampleText, set in HTML
       language: 'alogic',
       automaticLayout: true,
       wordWrap: true

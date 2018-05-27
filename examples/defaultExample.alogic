@@ -1,0 +1,12 @@
+fsm add {
+  in sync ready u8 p_in;
+  in u8 addend;
+
+  out sync ready u8 p_out;
+
+  void main() {
+    u8 sum = p_in.read() + addend;
+    p_out.write(sum);
+    fence;
+  }
+}

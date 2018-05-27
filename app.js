@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // *****************************************************************************
 // Argon Design Ltd. Project P8009 Alogic
-// (c) Copyright 2017 Argon Design Ltd. All rights reserved.
+// (c) Copyright 2017-8 Argon Design Ltd. All rights reserved.
 //
 // Module : afiddle
 // Author : Steve Barlow
@@ -88,12 +88,17 @@ function extractEntityName (code) {
     .replace(/[/][*][^*]*[*][/]/g, ' ')
     // Remove preprocessor lines
     .replace(/(^|\n)\s*#[^\n]*/g, '')
+    // Remove (*...*) attributes
+    .replace(/[(][*][^*]*[*][)]/g, ' ')
     // Replace all whitespace with a single space
     .replace(/\s+/g, ' ')
     // Tokenise
     .trim().split(' ')
-  // Get second token
+  // Get second token, checking there is a second one
   var name = tokens[1]
+  if (name == null) {
+    return null
+  }
   // Check name starts with an alphabetic, _ or $ and contains only alphanumerics, _ or $
   if (name.match(/^[A-Za-z_$][A-Za-z0-9_$]*$/) != null) {
     return name
@@ -171,12 +176,38 @@ exec(ALOGIC + ' --version')
 //
 // *** ENDPOINT '/' - Serve main HTML page
 //
+// Serves the main HTML page, which pulls in the CSS and Javascript code.
+//
+// The example code in the source window prior to editing can be set by adding a query string.
+// '/?example=example23.alogic' will take text from the file examples/example23.alogic. If no
+// query string is given, the file defaultExample.alogic is used. If the requested file doesn't
+// exist, the source window is left empty.
+//
 app.get('/', function (req, res) {
-  res.render('index', { version: alogicVersion })
+  var exampleFileName = req.query.example || 'defaultExample.alogic'
+  // Make sure someone can't hack to a higher level in the filesystem using '..'
+  exampleFileName = path.basename(exampleFileName)
+  var exampleText
+  fs.readFile(path.join(__dirname, 'examples', exampleFileName), 'utf8')
+  .then(function (result) {
+    exampleText = result
+  })
+  .catch(function () {
+    exampleText = ''
+  })
+  .then(function () {
+    // Place text in quotes, converting newlines to '\n's and escaping quotes
+    var txt = exampleText
+      .replace(/\n/g, '\\n')
+      .replace(/"/g, '\\"')
+    var quotedExampleText = '"' + txt + '"'
+    res.render('index', { version: alogicVersion, exampleText: quotedExampleText })
+  })
 })
 
 //
 // *** ENDPOINT '/compile' - Respond to POSTs with Alogic source code by compiling it
+//
 // Input POST must have content-type 'text/alogic'. Response is 'text/plain'.
 //
 // If there are compilation errors, response is:
@@ -184,10 +215,9 @@ app.get('/', function (req, res) {
 //    input.alogic:2: ERROR: mismatched input ...
 //    ...
 //
-// If the compilation is successful and results in a single Verilog file, it is the contents of the Verilog file
-//
-// If it results in multiple files, they are concatenated with a ==>FILENAME<== before each file, using tail to
-// do this.
+// If the compilation is successful and results in a single Verilog file, it is the contents of the Verilog
+// file. If it results in multiple files, they are concatenated with a ==>FILENAME<== before each file,
+// using tail to do this.
 //
 // Test with curl http://localhost:8000/compile -H content-type:text/alogic --data-binary @test/foo.alogic
 //
@@ -253,7 +283,7 @@ app.post('/compile', function (req, res) {
 })
 
 //
-// *** ENDPOINT '/' - Serve privacy HTML page
+// *** ENDPOINT '/privacy' - Serve privacy HTML page
 //
 app.get('/privacy', function (req, res) {
   res.sendFile('static/privacy.html', { root: __dirname })
