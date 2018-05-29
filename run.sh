@@ -1,7 +1,7 @@
 #!/bin/bash
 # ******************************************************************************
 # Argon Design Ltd. Project P8009 Alogic
-# (c) Copyright 2017 Argon Design Ltd. All rights reserved.
+# (c) Copyright 2017-8 Argon Design Ltd. All rights reserved.
 #
 # Module : afiddle
 # Author : Steve Barlow
@@ -17,5 +17,5 @@
 # ******************************************************************************
 
 gnome-terminal \
-    --tab --title afiddle -e "node app.js" \
+    --tab --title afiddle -e "node app.js 8000" \
     --tab --title ngrok -x ngrok http -config ~/.ngrok2/ngrok.yml -region=eu -hostname=afiddle.argondesign.com 8000

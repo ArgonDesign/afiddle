@@ -9,6 +9,9 @@
 //
 // DESCRIPTION:
 // Main code. Run using './app.js', 'node app.js' or 'npm start'.
+//
+// The port that afiddle serves on can be specified on the command line.
+// e.g. 'npm start 8000'. If no port is specified, it defaults to port 80.
 // *****************************************************************************
 
 // Useful websites:
@@ -34,7 +37,7 @@ const morgan = require('morgan')
 const winston = require('winston')
 
 // User adjustable options and settings
-const PORT = 8000
+const PORT = process.argv[2] || 80
 const RUNPENDIR = path.join(__dirname, 'runpen')
 const LOGDIR = path.join(__dirname, 'logs')
 
