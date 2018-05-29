@@ -31,7 +31,7 @@ $ git clone https://github.com/ArgonDesign/afiddle
 $ make
 ```
 
-Once built, the server can be run by executing *app.js*, either with `./app.js`, `node app.js` or `npm start`. The server operates on `localhost:8000`. We usually expose the server to the outside world using [ngrok](https://ngrok.com/). The shell script `run.sh` can be used to start both ngrok and the server.
+Once built, the server can be run by executing *app.js*, either with `./app.js`, `node app.js` or `npm start`. The port that the server serves on can be set with an optional argument. e.g. `npm start 8000`. The default is port 80. We usually run it using port 8000 and exposing the server to the outside world using [ngrok](https://ngrok.com/). The shell script `run.sh` can be used to start both ngrok and the server.
 
 The server uses a directory `runpen` to store user-entered code in files for the Alogic compiler to work on. There is also a directory `logs` for log files. The locations of these directories and the port that the server uses can be set by constants at the top of the apps.js file.
 
