@@ -52,7 +52,7 @@ default: build
 
 build:
 	npm install
-	node_modules/.bin/bower install
+	node_modules/.bin/bower --allow-root install
 	./alogic update
 
 clean:
