@@ -1,0 +1,17 @@
+# ******************************************************************************
+# Argon Design Ltd. Project P8009 Alogic
+# (c) Copyright 2017-8 Argon Design Ltd. All rights reserved.
+#
+# Module : afiddle
+# Author : Steve Barlow
+# $Id:$
+#
+# DESCRIPTION:
+# Files/directories not to check in to git
+# *******************************************************************************
+
+alogic_install
+bower_components
+logs
+node_modules
+runpen

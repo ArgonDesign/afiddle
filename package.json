@@ -14,8 +14,10 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "@google-cloud/logging-winston": "^0.9.0",
     "body-parser": "^1.18.2",
     "bower": "^1.8.2",
+    "commander": "^2.15.1",
     "express": "^4.15.4",
     "fs-extra": "^4.0.2",
     "monaco-editor": "^0.10.0",

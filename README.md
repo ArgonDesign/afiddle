@@ -12,28 +12,55 @@ Afiddle comprises a web server written in node.js that serves HTML and client-si
 Installation and Set-up
 -----------------------
 
+Afiddle can be run either as a local server or as a Docker container on a cloud platform.
+
+### Local
+
 The following packages must be installed to build the server:
 
 1. node.js and npm (http://nodejs.org/)
-   On Ubuntu/Debian try: `sudo apt-get install nodejs npm`
+   <br/>On Ubuntu/Debian try: `sudo apt-get install nodejs npm`
 
 2. git (https://git-scm.com/)
-   On Ubuntu/Debian try: `sudo apt-get install git`
+   <br/>On Ubuntu/Debian try: `sudo apt-get install git`
 
 3. sbt (http://www.scala-sbt.org/)
-   This is the Scala build tool and development environment
-   On Ubuntu/Debian try: `sudo apt-get install sbt`
+   <br/>This is the Scala build tool and development environment
+   <br/>On Ubuntu/Debian try: `sudo apt-get install sbt`
 
 Then to download and install afiddle and its dependencies:
 
-```
+```bash
 $ git clone https://github.com/ArgonDesign/afiddle
 $ make
 ```
 
-Once built, the server can be run by executing *app.js*, either with `./app.js`, `node app.js` or `npm start`. The port that the server serves on can be set with an optional argument. e.g. `npm start 8000`. The default is port 80. We usually run it using port 8000 and exposing the server to the outside world using [ngrok](https://ngrok.com/). The shell script `run.sh` can be used to start both ngrok and the server.
+Once built, the server can be run by executing *app.js*, either with `./app.js`, `node app.js` or `npm start`. With the first two methods, command line arguments are supported to set the port and the logging option.
 
-The server uses a directory `runpen` to store user-entered code in files for the Alogic compiler to work on. There is also a directory `logs` for log files. The locations of these directories and the port that the server uses can be set by constants at the top of the apps.js file.
+We usually run it using port 8000 and exposing the server to the outside world using [ngrok](https://ngrok.com/). The shell script `run.sh` can be used to start both ngrok and the server.
+
+The server uses a directory `runpen` to store user-entered code in files for the Alogic compiler to work on. There is also a directory `logs` for log files. The locations of these directories can be set by constants at the top of the apps.js file.
+
+### Cloud
+
+The following packages must be installed:
+
+1. docker (https://www.docker.com)
+   <br/>On Ubuntu see https://docs.docker.com/install/linux/docker-ce/ubuntu/ for install instructions
+
+2. git (https://git-scm.com/)
+   <br/>On Ubuntu/Debian try: `sudo apt-get install git`
+
+Then to download and install afiddle and build a Docker image:
+
+```bash
+$ git clone https://github.com/ArgonDesign/afiddle
+$ make dockerbuild
+```
+
+An image named `afiddle` is created in Docker.
+
+To deploy the image in the cloud, look at `google_cloud_deploy.md` which shows the steps in run on Google Cloud Kubernetes Engine (GKE).
 
 Webserver Endpoints
 -------------------
@@ -47,28 +74,32 @@ The endpoint `/privacy` serves a web page with privacy information.
 Tour of Files
 -------------
 
-| Directory/file   | Description |
-|------------------|-------------|
-|examples/         | Files that can be chosen as initial text in the source window |
-|static/           | Static files served to the client. Contains static HTML files and subdirectories for `css`, `images` and `js` files. Look particularly at the main client-side Javascript, `js/index.js` |
-|test/             | Short Alogic files used in testing |
-|views/            | Contains main page HTML template `index.mustache` |
-|alogic*           | Script to run Alogic compiler. Also used as `./alogic update` to install/update Alogic from Github |
-|app.js            | Main code of afiddle server |
-|bower.json        | Control file for `bower` which installs/updates client side Javascript libraries. Contains the names and version numbers of all the libraries used. Libraries are downloaded to the directory `bower_components`.
-|LICENSE           | Details of license for afiddle. It is licensed under the BSD 3-clause license with attribution (https://spdx.org/licenses/BSD-3-Clause-Attribution.html) | 
-|Makefile          | Build file using `make` |
-|package.json      | Control file for Node package manager `npm`. Contains the names and version numbers of all the packages used. Packages are downloaded to the directory `node_modules`. Note that the Monaco editor is downloaded as a package, but is actually used as a client-side library |
-|README.md         | This file |
-|run.sh*           | Shell script to start both the server and an `ngrok` session to tunnel it to a public web address |
-|screenshot.png    | Screenshot used in this README |
+| Directory/file        | Description |
+|-----------------------|-------------|
+|examples/              | Files that can be chosen as initial text in the source window |
+|static/                | Static files served to the client. Contains static HTML files and subdirectories for `css`, `images` and `js` files. Look particularly at the main client-side Javascript, `js/index.js` |
+|test/                  | Short Alogic files used in testing |
+|views/                 | Contains main page HTML template `index.mustache` |
+|alogic*                | Script to run Alogic compiler. Also used as `./alogic update` to install/update Alogic from Github |
+|app.js                 | Main code of afiddle server |
+|bower.json             | Control file for `bower` which installs/updates client side Javascript libraries. Contains the names and version numbers of all the libraries used. Libraries are downloaded to the directory `bower_components` |
+|docker_interactive.sh  | Shell script to start an interactive shell session with an afiddle Docker container |
+|docker_run.sh          | Shell script to run an afiddle Docker container locally and tunnel it to a public web address. Used for testing only |
+|google_cloud_deploy.md | Note on how to deploy afiddle Docker container to Google Cloud Kubernetes Engine (GKE)
+|LICENSE                | Details of license for afiddle. It is licensed under the BSD 3-clause license with attribution (https://spdx.org/licenses/BSD-3-Clause-Attribution.html) | 
+|Makefile               | Build file using `make` |
+|package.json           | Control file for Node package manager `npm`. Contains the names and version numbers of all the packages used. Packages are downloaded to the directory `node_modules`. Note that the Monaco editor is downloaded as a package, but is actually used as a client-side library |
+|README.md              | This file |
+|run.sh*                | Shell script to start both the server and an `ngrok` session to tunnel it to a public web address |
+|screenshot.png         | Screenshot used in this README |
+|screenshot_log.png     | Screenshot used in `google_cloud_deploy.md` showing Stackdriver logging in Google Console |
 
 Directories created during installation and in operation:
 
-| Directory/file   | Description |
-|------------------|-------------|
-|node_modules/     | Node.js packages used by server |
-|bower_components/ | Javascript libraries used by client-side code |
-|alogic_install/   | Directory where the Alogic compiler is installed |
-|runpen/           | Directory used to store source files entered in the web page so they can be compiled by the Alogic compiler. Each compile request creates a new directory with a 4-digit number, such as `0002`; the number increments with each request. Within this the server  creates an `alogic` subdirectory and a `verilog` subdirectory. The source code is then stored as `input.alogic` in the `alogic` directory. Once the compilation is completed, the numbered directory is deleted |
-|logs/             | Server log files. Logs are stored in a 5-file rotating sequence. |
+| Directory/file        | Description |
+|-----------------------|-------------|
+|node_modules/          | Node.js packages used by server |
+|bower_components/      | Javascript libraries used by client-side code |
+|alogic_install/        | Directory where the Alogic compiler is installed |
+|runpen/                | Directory used to store source files entered in the web page so they can be compiled by the Alogic compiler. Each compile request creates a new directory with a 4-digit number, such as `0002`; the number increments with each request. Within this the server  creates an `alogic` subdirectory and a `verilog` subdirectory. The source code is then stored as `input.alogic` in the `alogic` directory. Once the compilation is completed, the numbered directory is deleted |
+|logs/                  | Server log files. Logs are stored in a 5-file rotating sequence. |

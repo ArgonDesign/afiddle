@@ -8,15 +8,36 @@
 // $Id:$
 //
 // DESCRIPTION:
-// Main code. Run using './app.js', 'node app.js' or 'npm start'.
+// Main code for afiddle web server.
 //
-// The port that afiddle serves on can be specified on the command line.
-// e.g. 'npm start 8000'. If no port is specified, it defaults to port 80.
+// Run using './app.js', 'node app.js' or 'npm start'.
+//
+// For the first two methods, the following command line options can be used:
+// --port <port>            Port to serve on (default 8000)
+// --logging <choice>       Logging - local or stackdriver (default local)
+//
+// Options can't be specified for 'npm start' as they are interpreted as options
+// to npm.
+//
+// Other user adjustable settings can set by editing constants below. As
+// currently set up, regardless of where the server is run from, it puts its
+// runpen and log files in subdirectories of the afiddle executable directory.
+//
+// The default logging option is 'local' which logs to the local filesystem.
+// 'stackdriver' logging logs to Google Cloud's Stackdriver. This can only be
+// used when running on Google Cloud or AWS. For AWS, the environment variable
+// GOOGLE_APPLICATION_CREDENTIALS must be set to a json credentials file. This
+// isn't required when using Google Cloud.
+//
+// Log information is also output to the console, provided it is a TTY. This
+// is suppressed if it isn't a TTY to avoid excess output when running in a
+// container.
 // *****************************************************************************
 
 // Useful websites:
 // https://github.com/ArgonDesign/alogic
 // https://github.com/mattgodbolt/compiler-explorer
+// https://github.com/tj/commander.js
 // https://expressjs.com/en/4x/api.html
 // https://codigo.co.uk/blog/post/expressjs-and-moustache
 // https://stackoverflow.com/questions/20643470/execute-a-command-line-binary-with-node-js
@@ -25,8 +46,11 @@
 // https://stackoverflow.com/questions/28703625/how-do-you-properly-return-multiple-values-from-a-promise
 // https://stackoverflow.com/questions/34960886/are-there-still-reasons-to-use-promise-libraries-like-q-or-bluebird-now-that-we
 // https://stackoverflow.com/questions/27906551/node-js-logging-use-morgan-and-winston
+// https://cloud.google.com/logging/docs/setup/nodejs
+// https://nodejs.org/api/tty.html
 
 // External modules used
+const commander = require('commander')
 const express = require('express')
 const mustacheExpress = require('mustache-express')
 const bodyParser = require('body-parser')
@@ -35,14 +59,45 @@ const childProcess = require('child_process')
 const path = require('path')
 const morgan = require('morgan')
 const winston = require('winston')
+const googleCloudLoggingWinston = require('@google-cloud/logging-winston')
 
-// User adjustable options and settings
-const PORT = process.argv[2] || 80
+// Command line options
+commander
+  .description('Web server for afiddle - a fiddle for the Alogic mid-level hardware design language')
+  .option('-p, --port <port>', 'Port to serve on', 8000)
+  .option('-l, --logging <choice>', 'Logging - local or stackdriver', 'local')
+  .parse(process.argv)
+
+check(isNumeric(commander.port), '--port value must be numeric')
+check(contains(['local', 'stackdriver'], commander.logging), '--logging value must be local or stackdriver')
+
+// Other user adjustable options and settings, set by editing
 const RUNPENDIR = path.join(__dirname, 'runpen')
 const LOGDIR = path.join(__dirname, 'logs')
 
 // -----------------------------------------------------------------------------
 // Utility Functions
+
+// Check if value is in array. Returns true if thr array contains value, otherwise
+// returns false
+function contains (array, value) {
+  return array.indexOf(value) !== -1
+}
+
+// Check if a value is numeric or not. Returns true if value is a number or a string
+// that represents a number. Otherwise returns false
+function isNumeric (value) {
+  return !isNaN(value)
+}
+
+// Check condition is true and print an error message to stderr and exits the program
+// with an exit code of 1 if not. Used to validate command line argument values
+function check (condition, errorMessage) {
+  if (!condition) {
+    console.error('error: ' + errorMessage)
+    process.exit(1)
+  }
+}
 
 // Check if x is an empty object {}. Returns true if x is an empty object and false
 // if it is an object containing values or if it is some other type such as null,
@@ -116,26 +171,48 @@ function extractEntityName (code) {
 // We use morgan to create log messages for web requests
 // We then log these and messages from elsewhere in the code using winston
 
-fs.ensureDirSync(LOGDIR)
+var transports = []
+
+// Output log messages to console only if it is a TTY
+if (process.stdout.isTTY) {
+  const consoleTransport = new winston.transports.Console({
+    level: 'info',
+    handleExceptions: true,
+    json: false,
+    colorize: true
+  })
+  transports.push(consoleTransport)
+}
+
+if (commander.logging === 'stackdriver') {
+  // Logging to Google Cloud Stackdriver
+  console.log('Logging to Google Cloud Stackdriver')
+
+  const stackdriverTransport = new googleCloudLoggingWinston.LoggingWinston({
+    level: 'verbose',
+    logName: 'afiddle_log'
+  })
+  transports.push(stackdriverTransport)
+} else {
+  // Local logging to file
+  console.log('Logging to ' + LOGDIR)
+
+  fs.ensureDirSync(LOGDIR)
+
+  const fileTransport = new winston.transports.File({
+    level: 'verbose',
+    filename: path.join(LOGDIR, '/all-logs.log'),
+    handleExceptions: true,
+    json: true,
+    maxsize: 5242880, // 5MB
+    maxFiles: 5,
+    colorize: false
+  })
+  transports.push(fileTransport)
+}
 
 var logger = new winston.Logger({
-  transports: [
-    new winston.transports.File({
-      level: 'verbose',
-      filename: path.join(LOGDIR, '/all-logs.log'),
-      handleExceptions: true,
-      json: true,
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
-      colorize: false
-    }),
-    new winston.transports.Console({
-      level: 'info',
-      handleExceptions: true,
-      json: false,
-      colorize: true
-    })
-  ],
+  transports: transports,
   exitOnError: false
 })
 
@@ -171,10 +248,13 @@ const ALOGIC = path.join(__dirname, 'alogic')
 // Get Alogic version string
 var alogicVersion
 exec(ALOGIC + ' --version')
-  .then(function (std) {
-    alogicVersion = std.stdout
-  }
-)
+.then(function (std) {
+  alogicVersion = std.stdout
+})
+.catch(function (error) {
+  console.error(error.message.trim())
+  process.exit(1)
+})
 
 //
 // *** ENDPOINT '/' - Serve main HTML page
@@ -205,6 +285,10 @@ app.get('/', function (req, res) {
       .replace(/"/g, '\\"')
     var quotedExampleText = '"' + txt + '"'
     res.render('index', { version: alogicVersion, exampleText: quotedExampleText })
+  })
+  .catch(function (error) {
+    logger.log('error', error.message.trim())
+    res.sendStatus(500)
   })
 })
 
@@ -281,6 +365,7 @@ app.post('/compile', function (req, res) {
     })
     .catch(function (error) {
       logger.log('error', error.message.trim())
+      res.sendStatus(500)
     })
   }
 })
@@ -293,6 +378,6 @@ app.get('/privacy', function (req, res) {
 })
 
 // Finally, start the server
-app.listen(PORT, function () {
-  logger.log('info', 'Afiddle listening on port ' + PORT + '...')
+app.listen(commander.port, function () {
+  logger.log('info', 'Afiddle listening on port ' + commander.port + '...')
 })
