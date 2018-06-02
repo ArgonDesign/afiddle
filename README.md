@@ -32,18 +32,19 @@ Then to download and install afiddle and its dependencies:
 
 ```bash
 $ git clone https://github.com/ArgonDesign/afiddle
+$ cd afiddle
 $ make
 ```
 
-Once built, the server can be run by executing *app.js*, either with `./app.js`, `node app.js` or `npm start`. With the first two methods, command line arguments are supported to set the port and the logging option.
+Once built, the server can be run by executing **app.js**, either with `./app.js`, `node app.js` or `npm start`. With the first two methods, command line arguments are supported to set the port and the logging option. See the documentation at the top of **app.js** for details.
 
 We usually run it using port 8000 and exposing the server to the outside world using [ngrok](https://ngrok.com/). The shell script `run.sh` can be used to start both ngrok and the server.
 
-The server uses a directory `runpen` to store user-entered code in files for the Alogic compiler to work on. There is also a directory `logs` for log files. The locations of these directories can be set by constants at the top of the apps.js file.
+The server uses a directory `runpen` to temporarily store user-entered code in files for the Alogic compiler to work on. There is also a directory `logs` for log files. The locations of these directories can be set by constants at the top of the apps.js file.
 
 ### Cloud
 
-The following packages must be installed:
+The following packages must be installed (note the packages for local building above are not required as the Docker build process downloads and installs them in the container):
 
 1. docker (https://www.docker.com)
    <br/>On Ubuntu see https://docs.docker.com/install/linux/docker-ce/ubuntu/ for install instructions
@@ -51,16 +52,17 @@ The following packages must be installed:
 2. git (https://git-scm.com/)
    <br/>On Ubuntu/Debian try: `sudo apt-get install git`
 
-Then to download and install afiddle and build a Docker image:
+Then to download afiddle and build a Docker image:
 
 ```bash
 $ git clone https://github.com/ArgonDesign/afiddle
+$ cd afiddle
 $ make dockerbuild
 ```
 
-An image named `afiddle` is created in Docker.
+An image named `afiddle` is created in the Docker local repository. The image is set up to serve on port 80. It outputs log information to Google Stackdriver. Stackdriver supports both AWS and Google Cloud. If running on a different cloud system, the container will work, but there won't be a recorded log.
 
-To deploy the image in the cloud, look at `google_cloud_deploy.md` which shows the steps in run on Google Cloud Kubernetes Engine (GKE).
+To deploy the image in the cloud, look at `google_cloud_deploy.md` which shows the steps to run it on Google Cloud Kubernetes Engine (GKE).
 
 Webserver Endpoints
 -------------------
