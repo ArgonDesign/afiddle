@@ -150,6 +150,8 @@ function extractEntityName (code) {
     .replace(/[(][*][^*]*[*][)]/g, ' ')
     // Replace all whitespace with a single space
     .replace(/\s+/g, ' ')
+    // Treat 'verbatim entity' as a single token
+    .replace(/verbatim\sentity/g, 'verbatim_entity')
     // Tokenise
     .trim().split(' ')
   // Get second token, checking there is a second one

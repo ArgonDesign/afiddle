@@ -31,8 +31,9 @@ define({
     keywords: [
       'fsm', 'network', 'pipeline', 'typedef', 'struct', 'in', 'out', 'const',
       'param', 'fence', 'true', 'false', 'loop', 'while', 'do', 'for', 'if',
-      'goto', 'else', 'break', 'return', 'case', 'default', 'verilog',
-      'new', 'sync', 'ready', 'accept', 'wire', 'bubble'
+      'goto', 'else', 'break', 'return', 'case', 'default', 'verilog', 'new',
+      'let', 'entity', 'static', 'stall', 'comb', 'stack', 'sram', 'reg',
+      'sync', 'ready', 'accept', 'wire', 'bubble', 'fslice', 'bslice', 'verbatim'
     ],
 
     typeKeywords: [
@@ -65,12 +66,8 @@ define({
     tokenizer: {
       root: [
         // embedded Verilog
-        [ /(verilog)(\s*)(\()(\s*)(\))(\s*)(\{)/, [
+        [ /(verilog)(\s*)(\{)/, [
           'keyword',
-          'white',
-          '@brackets',
-          'white',
-          '@brackets',
           'white',
           { token: '@brackets', next: '@verilog' } ]
         ],
