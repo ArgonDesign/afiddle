@@ -9,14 +9,14 @@
 #
 # DESCRIPTION:
 # Shell script to run an afiddle Docker container locally and tunnel the web
-# site to the public address http://afiddle_dev.eu.ngrok.io. The docker
-# container must have already been created with 'make dockerbuild'.
+# site to the public address http://afiddle.eu.ngrok.io. The docker container
+# must have already been created with 'make dockerbuild'.
 #
 # This is primarily for testing. The container should be run in the cloud for
 # production.
 #
 # Opens a tabbed terminal window with 2 tabs - one for the server which is
-# accessible at localhost:8001 and one for ngrok which is configured to tunnel
+# accessible at localhost:8000 and one for ngrok which is configured to tunnel
 # this to the public address.
 #
 # The --init flag allows the container to be stopped with Ctrl-C in the window.
@@ -28,7 +28,7 @@
 # ******************************************************************************
 
 gnome-terminal \
-    --tab --title afiddle -e "docker run --init --rm -p 8001:80 afiddle" \
-    --tab --title ngrok -x ngrok http -config ~/.ngrok2/ngrok.yml -region=eu -subdomain=afiddle_dev 8001
+    --tab --title afiddle -e "docker run --init --rm -p 8000:80 afiddle" \
+    --tab --title ngrok -x ngrok http -config ~/.ngrok2/ngrok.yml -region=eu -subdomain=afiddle 8000
 
-# Access at http://afiddle_dev.eu.ngrok.io
+# Access at http://afiddle.eu.ngrok.io

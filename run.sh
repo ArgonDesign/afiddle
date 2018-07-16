@@ -9,7 +9,7 @@
 #
 # DESCRIPTION:
 # Shell script to start an afiddle web server running locally that is accessible
-# from http://afiddle.argondesign.com. Afiddle must have already been built with
+# from http://afiddle.eu.ngrok.com. Afiddle must have already been built with
 # 'make build'.
 #
 # Opens a tabbed terminal window with 2 tabs - one for the server which is
@@ -21,6 +21,6 @@
 
 gnome-terminal \
     --tab --title afiddle -e "node app.js --port 8000" \
-    --tab --title ngrok -x ngrok http -config ~/.ngrok2/ngrok.yml -region=eu -subdomain=afiddle_dev 8000
+    --tab --title ngrok -x ngrok http -config ~/.ngrok2/ngrok.yml -region=eu -subdomain=afiddle 8000
 
-# Access at http://afiddle.argondesign.com
+# Access at http://afiddle.eu.ngrok.com

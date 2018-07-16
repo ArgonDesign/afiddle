@@ -135,9 +135,9 @@ function exec (cmd) {
 }
 
 // Find the entity name in an alogic module. The module text is passed as a string
-// in code. Returns the name or if it can't be found, returns null.
-function extractEntityName (code) {
-  var tokens = code
+// in sourceCode. Returns the name or if it can't be found, returns null.
+function extractEntityName (sourceCode) {
+  var moduleDef = sourceCode
     // Concatenate continued lines
     .replace(/\\\n/g, '')
     // Remove //... comments
@@ -150,21 +150,15 @@ function extractEntityName (code) {
     .replace(/[(][*][^*]*[*][)]/g, ' ')
     // Replace all whitespace with a single space
     .replace(/\s+/g, ' ')
-    // Treat 'verbatim entity' as a single token
-    .replace(/verbatim\sentity/g, 'verbatim_entity')
-    // Tokenise
-    .trim().split(' ')
-  // Get second token, checking there is a second one
-  var name = tokens[1]
-  if (name == null) {
+    // Search for the module definition
+    .match(/(fsm|network|verbatim entity) ([A-Za-z0-9_$]+)/)
+
+  // Check we got a match
+  if (moduleDef == null) {
     return null
   }
-  // Check name starts with an alphabetic, _ or $ and contains only alphanumerics, _ or $
-  if (name.match(/^[A-Za-z_$][A-Za-z0-9_$]*$/) != null) {
-    return name
-  } else {
-    return null
-  }
+  var name = moduleDef[2] // Match returns complete match string and then matched groups
+  return name
 }
 
 // -----------------------------------------------------------------------------
