@@ -140,10 +140,10 @@ function extractEntityName (sourceCode) {
   var moduleDef = sourceCode
     // Concatenate continued lines
     .replace(/\\\n/g, '')
-    // Remove //... comments
-    .replace(/[/][/].*\n/g, ' ')
     // Remove /*...*/ comments
     .replace(/[/][*](.|\n)*?[*][/]/g, ' ')
+    // Remove //... comments
+    .replace(/[/][/].*\n/g, ' ')
     // Remove preprocessor lines
     .replace(/(^|\n)\s*#.*/g, '')
     // Remove (*...*) attributes
