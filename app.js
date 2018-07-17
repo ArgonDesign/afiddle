@@ -143,11 +143,11 @@ function extractEntityName (sourceCode) {
     // Remove //... comments
     .replace(/[/][/].*\n/g, ' ')
     // Remove /*...*/ comments
-    .replace(/[/][*][^*]*[*][/]/g, ' ')
+    .replace(/[/][*](.|\n)*?[*][/]/g, ' ')
     // Remove preprocessor lines
-    .replace(/(^|\n)\s*#[^\n]*/g, '')
+    .replace(/(^|\n)\s*#.*/g, '')
     // Remove (*...*) attributes
-    .replace(/[(][*][^*]*[*][)]/g, ' ')
+    .replace(/[(][*](.|\n)*?[*][)]/g, ' ')
     // Replace all whitespace with a single space
     .replace(/\s+/g, ' ')
     // Search for the module definition
