@@ -10,7 +10,7 @@
 # Shell script to start an interactive shell with an afiddle Docker container.
 # Note that this must be used with source, not executed as a command.
 #
-# Usage: source interactive.sh
+# Usage: source docker_interactive.sh
 # ******************************************************************************
 
 docker run -it afiddle /bin/bash
