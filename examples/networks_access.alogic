@@ -1,0 +1,11 @@
+network foo {
+  in  sync ready bool p_i;
+  out sync ready bool p_o;
+
+  new fsm bar {
+    void main() {
+      p_o.write(p_i.read());
+      fence;
+    }
+  }
+}

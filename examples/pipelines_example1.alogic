@@ -1,0 +1,76 @@
+network dotprod {
+  // 1st input vector
+  in sync ready u16 a0;
+  in sync ready u16 a1;
+  in sync ready u16 a2;
+  in sync ready u16 a3;
+
+  // 2nd input vector
+  in sync ready u16 b0;
+  in sync ready u16 b1;
+  in sync ready u16 b2;
+  in sync ready u16 b3;
+
+  // Output dot product
+  out sync ready u34 p_prod;
+
+  // Element-wise products
+  pipeline u32 mul0;
+  pipeline u32 mul1;
+  pipeline u32 mul2;
+  pipeline u32 mul3;
+
+  // The reduced sums
+  pipeline u33 sum10;
+  pipeline u33 sum32;
+
+  new fsm stage0 {
+    void main() {
+      // Read operands, zero-extend them to 32 bits and perform multiplications
+      mul0 = @zx(32, a0.read()) * @zx(32, b0.read());
+      mul1 = @zx(32, a1.read()) * @zx(32, b1.read());
+      mul2 = @zx(32, a2.read()) * @zx(32, b2.read());
+      mul3 = @zx(32, a3.read()) * @zx(32, b3.read());
+
+      // Write pipeline variables to next stage
+      write;
+
+      fence;
+    }
+  }
+
+  stage0 -> stage1; // Connect pipeline ports
+
+  new fsm stage1 {
+    void main() {
+      // Read pipeline variables from previous stage
+      read;
+
+      // Zero-extend to 33 bits and perform 1st level of the reduction
+      sum10 = @zx(33, mul0) + @zx(33, mul1);
+      sum32 = @zx(33, mul2) + @zx(33, mul3);
+
+      // Write pipeline variables to next stage
+      write;
+
+      fence;
+    }
+  }
+
+  stage1 -> stage2; // Connect pipeline ports
+
+  new fsm stage2 {
+    void main() {
+      // Read pipeline variables from previous stage
+      read;
+
+      // Zero-extend to 34 bits and perform the final sum
+      u34 prod = @zx(34, sum32) + @zx(34, sum10);
+
+      // Write final result to output port
+      p_prod.write(prod);
+
+      fence;
+    }
+  }
+}

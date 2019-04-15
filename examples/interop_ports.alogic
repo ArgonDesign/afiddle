@@ -1,0 +1,9 @@
+fsm foo {
+  in sync       bool a;
+  in sync ready u128 b;
+
+  out sync       u2   c;
+  out sync ready bool d;
+
+  // ...
+}

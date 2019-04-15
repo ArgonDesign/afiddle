@@ -1,0 +1,32 @@
+fsm foo {
+  in u3 foo;
+  u3 bar;
+  u3 baz;
+  out u4 a;
+  out u4 b;
+
+  void main() {
+    case (foo) {
+      bar: {
+        a++;
+        fence;
+      }
+      baz: {
+        b++;
+        fence;
+      }
+    }
+
+    case (foo) {
+      bar: {
+        a++;
+        fence;
+      }
+      baz: {
+        b++;
+        fence;
+      }
+      default: fence;
+    }
+  }
+}

@@ -1,0 +1,19 @@
+fsm rec {
+  u8 i;
+
+  void main() {
+    i = 8'd0;
+    foo();
+  }
+
+  (* reclimit = 4 *)
+  void foo() {
+    // ...
+    if (i < 8'd3) {
+      i++;
+      foo();
+    }
+    // ...
+    return;
+  }
+}

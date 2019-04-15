@@ -1,0 +1,12 @@
+fsm registered {
+ out bool a;
+
+ void main() {
+    a = false;
+    fence;
+    // a is now false
+    a = true;
+    fence;
+    // a is now true
+ }
+}

@@ -1,0 +1,9 @@
+fsm foo {
+  in sync u4 p_in;
+  out wire u4 x;
+
+  void main() {
+    x = p_in.read() + 4'd3;
+    fence;
+  }
+}

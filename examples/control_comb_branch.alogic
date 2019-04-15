@@ -1,0 +1,35 @@
+fsm foo {
+  u4 a;
+  in sync ready u4 c;
+  out u4 b;
+  out u4 d;
+  out u4 e;
+  out u4 f;
+  out u4 g;
+  out u4 h;
+  out u4 i;
+
+  void main() {
+    a++;          //  | Cycle 1
+    b++;          //  | Cycle 1
+    c.read();     //  | Cycle 1
+                  //  |
+    if (a) {      // / \
+      f++;        // | . Cycle 1 if 'a' is true
+      g++;        // | . Cycle 1 if 'a' is true
+    } else {      // . .
+      h++;        // . | Cycle 1 if 'a' is false
+      i++;        // . | Cycle 1 if 'a' is false
+    }             // \ /
+                  //  |
+    fence;        //  V Cycle 1 ends
+
+    d.write(a);   // | Cycle 2
+    e--;          // | Cycle 2
+    goto foo;     // V Cycle 2 ends
+  }
+
+  void foo() {
+    fence;
+  }
+}

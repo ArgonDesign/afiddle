@@ -1,0 +1,24 @@
+fsm one_or_the_other {
+  in bool p_which;
+  // ...
+
+  void main() {
+    if (p_which) {
+      do_true();
+    } else {
+      do_false();
+    }
+  }
+
+  void do_true() {
+    // Do something
+    // ...
+    return;
+  }
+
+  void do_false() {
+    // Do something else
+    // ...
+    return;
+  }
+}

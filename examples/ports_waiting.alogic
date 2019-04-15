@@ -1,0 +1,13 @@
+fsm waiting {
+
+  in sync ready void start;
+  out wire u2 a;
+
+  void main() {
+
+    start.wait(); // if start is not valid then "go" will go low
+    // do_something
+    a = 2'd3;
+    fence;
+  }
+}

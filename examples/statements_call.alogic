@@ -1,0 +1,18 @@
+fsm foo {
+  void main() {
+    // ...
+    fence;
+  }
+
+  void foo() {
+    // ...
+    bar();  // Transfer control to function 'bar'
+    // ...
+    fence;
+  }
+
+  void bar() {
+    // ...
+    fence;
+  }
+}

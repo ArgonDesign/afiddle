@@ -1,0 +1,11 @@
+fsm foo {
+  u5 a;
+
+  void main() {
+    a = 5'd0;
+    do {
+      a++;
+    } while (a<4'd5);
+    fence;
+  }
+}

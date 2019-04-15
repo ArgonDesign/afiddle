@@ -1,0 +1,25 @@
+fsm foo {
+  // out u48 concat;
+  out u16 x;
+
+  // declaration:
+  sram wire u16 storage[1024];
+
+  void main() {
+
+    // Write:
+    storage.write(10'd87, 16'h0123);
+    fence;
+
+    // Issue read access
+    storage.read(10'd87);
+    fence;
+    // Given that storage was declared as combinatorially driven,
+    // storage.rdata is available on the following cycle.
+    // x should now be incremented by whatever value is in the
+    // SRAM at address 87
+    x += storage.rdata; // rdata will be 16'h0123
+
+    fence;
+  }
+}

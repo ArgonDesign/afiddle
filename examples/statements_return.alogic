@@ -1,0 +1,15 @@
+fsm foo {
+  void main() {
+    // ...
+    fence;
+  }
+
+  void foo() {
+    bar();  // Call 'bar'.
+    // When it returns, loop back to the top of 'foo'.
+  }
+
+  void bar() {
+    return; // Return to call site
+  }
+}

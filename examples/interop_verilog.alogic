@@ -1,0 +1,13 @@
+verbatim entity arb {
+  in  sync ready u8 i_0;
+  in  sync ready u8 i_1;
+  out sync ready u8 o;
+
+  verbatim verilog {
+    // i_0 has priority
+    assign o = i_0__valid ? i_0 : i_1;
+    assign o__valid = i_0__valid | i_1__valid;
+    assign i_0__ready = o__ready;
+    assign i_1__ready = o__ready & ~i_0__valid;
+  }
+}

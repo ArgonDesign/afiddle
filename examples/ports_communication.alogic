@@ -1,0 +1,4 @@
+fsm foo {
+  in u7 p_in_a;
+  out u14 p_out_b;
+}

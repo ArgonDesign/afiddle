@@ -1,0 +1,14 @@
+fsm foo {
+
+  void main() {
+
+    u2 a = 2'b0;
+    bool b = a[1];
+    fence;
+
+    u4 c = 4'b0;
+    u2 d = c[2:1];
+    fence;
+
+  }
+}

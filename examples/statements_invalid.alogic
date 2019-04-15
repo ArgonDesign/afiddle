@@ -1,0 +1,24 @@
+fsm foo {
+  in u4 p_in_0;
+  u4 a;
+  u4 b;
+  u4 c;
+
+  void main() {
+
+    // Invalid because 'if' is control and 'else' is combinatorial
+    if (a) {
+      b = 2;
+      fence;
+    } else {
+      c = 2;
+    }
+
+    // Invalid because control block must end in a control statement
+    if (a) {
+      b = p_in_0.read();
+      fence;
+      b += p_in_0.read();
+    }
+  }
+}

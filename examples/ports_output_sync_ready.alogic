@@ -1,0 +1,15 @@
+fsm slices {
+    out sync ready        u8 a; // `fslice` is the default
+    out sync ready fslice u8 b; // Same as above
+    out sync ready bslice u8 c;
+    out sync ready bubble u8 d;
+
+    // add small amount of extra buffering:
+    out sync ready fslice fslice u8 e;
+
+    // break the combinatorial paths in both the forward and
+    // backward directions, while maintaining the possibility
+    // of 100% utilization
+    out sync ready bslice fslice u8 f;
+
+}

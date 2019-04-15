@@ -1,0 +1,30 @@
+fsm foo {
+  u4 a;
+  in sync ready u4 c;
+  out u4 b;
+  out u4 d;
+  out u4 e;
+  out u4 f;
+  out u4 g;
+  bool h = 1'b1;
+
+  void main() {
+    a++;         // | Cycle 1
+    b++;         // | Cycle 1
+    c.read();    // | Cycle 1
+                 // |
+    while (h) {  // V Cycle 1 - Test 'h' to decide loop entry, the cycle ends
+      f++;       // | Cycle 2 if 'h' was true
+      g++;       // | Cycle 2 if 'h' was true
+      h = false; // V Cycle 2 ends if 'h' was true - Iterate once for this example
+    }
+
+    d.write(a);   // | Cycle 3 if 'while' loop was entered, otherwise Cycle 2
+    e--;         // | Cycle 3 if 'while' loop was entered, otherwise Cycle 2
+    goto foo;    // V Cycle 3 ends if 'while' loop was entered, otherwise Cycle 2 ends
+  }
+
+  void foo() {
+    fence;
+  }
+}

@@ -1,0 +1,52 @@
+struct foo_t {
+    bool start;
+    u5 data;
+};
+
+fsm foo {
+  out u158 concat;
+
+  void main() {
+
+    u11 arg;
+
+    // uint $clog2(arg);
+    u16 size = $clog2(arg);
+
+    // int(N) $signed(expr);
+    // uint(N) $unsigned(expr);
+    i11 arg_signed = $signed(arg);
+    u11 arg_unsigned = $unsigned(arg_signed);
+
+    // uint @bits(type);
+    i16 bits1 = @bits(foo_t);
+    // uint @bits(expr);
+    i16 bits2 = @bits(arg);
+
+    // bool @msb(expr);
+    bool top = @msb(arg);
+
+    // uint(N) @ex(bit, N, expr);
+    // int(N) @ex(bit, N, expr);
+    u5 a = 5'b100;
+    u10 b1 = @ex(1'b1,10,a); // b1 = 11111 00100 interpreted as unsigned
+    i10 b2 = @ex(1'b1,10,a); // b2 = 11111 00100 interpreted as signed
+
+    // uint(N) @zx(N, expr);
+    // int(N) @zx(N, expr);
+    u5 c1 = @zx(5,2'd2); // c1 = 111 10 interpreted as unsigned
+    i5 c2 = @zx(5,2'd2); // c1 = 111 10 interpreted as signed
+
+    // uint(N) @sx(N, expr);
+    // int(N) @sx(N, expr);
+    u5 d1 = @sx(5,2'd2);  // d1 = 111 10 interpreted as unsigned
+    i5 d2 = @sx(5,2'd2); // d2 = 111 10 interpreted as unsigned
+
+    // [
+    // If they are not used, the variables will be optimized out
+    concat = {size,arg_signed,arg_unsigned,bits1,bits2,top,a,b1,b2,c1,c2,d1,d2};
+    fence;
+    // ]
+
+  }
+}

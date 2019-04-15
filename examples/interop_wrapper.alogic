@@ -1,0 +1,9 @@
+verbatim entity inc_wrap {
+  in  u8 ii;
+  out u8 oo;
+
+  verbatim verilog {
+    // Instantiate the subject module and connect it
+    inc inc_i(.i(ii), .o(oo));
+  }
+}

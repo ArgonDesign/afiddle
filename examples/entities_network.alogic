@@ -1,0 +1,4 @@
+network spam {
+    // compiler will add clk and rst once other code is added
+
+}

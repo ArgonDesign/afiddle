@@ -1,0 +1,12 @@
+fsm let_loop {
+  u8 foo;
+
+  void main() {
+
+    // Loop 8 times using a 3 bit loop variable
+    let (u3 i = 0) do {
+      foo[i] = 0;
+      i++;
+    } while (i);
+  }
+}

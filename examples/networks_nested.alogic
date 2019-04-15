@@ -1,0 +1,19 @@
+network foo {
+  out u3 p_out_0;
+  out u3 p_out_1;
+
+  fsm bar {
+    out u3 p_out;
+
+    void main() {
+        p_out.write(3'd4);
+        fence;
+    }
+  }
+
+  bar_0 = new bar();
+  bar_1 = new bar();
+
+  bar_0.p_out->p_out_0;
+  bar_1.p_out->p_out_1;
+}

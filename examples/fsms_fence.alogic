@@ -1,0 +1,23 @@
+fsm fenceblock {
+  u3 s_l2 = 1;
+  out u8 s;
+
+  fence {
+    // this line will be inserted at the start of every state case
+    s = 8'd1 << s_l2;
+  }
+
+  void main () {
+    // ...
+    s_l2 = 2;
+    fence;
+
+    // ...
+    s_l2 = 3;
+    fence;
+
+    // ...
+    s_l2 = 4;
+    fence;
+  }
+}

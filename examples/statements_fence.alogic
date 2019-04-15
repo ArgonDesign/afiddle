@@ -1,0 +1,14 @@
+fsm foo {
+  u4 a;
+  u4 b;
+  u4 c;
+  u4 d;
+  u4 e;
+
+  void main() {
+    a = b + c;
+    fence;
+    d = a + e;
+    fence;
+  }
+}

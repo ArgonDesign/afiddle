@@ -1,0 +1,10 @@
+fsm foo {
+  in u128 data;
+  in u32  addr;
+  in bool last;
+
+  out u64  item;
+  out bool first;
+
+  //...
+}

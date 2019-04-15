@@ -1,0 +1,13 @@
+fsm foo {
+  out u19 concat;
+
+  void main() {
+    u10 a;
+    u2[3] b;
+    bool[3] c;
+    {a, b[1], c[3]} = 13'h1abc; // 10 bits + 2 bits + 1 bit
+
+    concat = {a,b,c}; // if a,b,c are unused they will be optimized out.
+    fence;
+  }
+}

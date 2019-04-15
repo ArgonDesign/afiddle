@@ -1,0 +1,25 @@
+fsm foo {
+  void main() {
+    // ...
+    fence;
+  }
+
+  void a() {
+    b();
+  }
+
+  void b() {
+    // Try switching between options 1 and 2:
+
+    // Option 1: c() then return;
+    c();
+    return;
+
+    // Option 2: goto c;
+    // goto c;
+  }
+
+  void c() {
+    return;
+  }
+}

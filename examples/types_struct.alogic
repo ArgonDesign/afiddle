@@ -1,0 +1,38 @@
+struct point_t {
+  u16 x;
+  u16 y;
+};
+
+struct rect_t {
+  point_t topleft;
+  u8 width;
+  u8 height;
+};
+
+fsm foo {
+  // if rect1, rect2, rect3 are not used, they will be optimised out.
+  out wire rect_t rect1;
+  out wire rect_t rect2;
+  out wire rect_t rect3;
+
+  void main() {
+
+    // declare a simple variable with a structure type:
+    rect_t rect; // variable called 'rect' with type 'rect_t'
+    point_t some_point; // variable called some_point with type point_t
+
+    // Fields of a structure type variable are accessed
+    // with the usual dot notation:
+    rect.topleft = some_point;
+    rect.width = 8'd9;
+    rect.height = 8'd1;
+
+    // using bit concatenation:
+    rect1 = {some_point.x, some_point.y, 8'd9, 8'd1};
+    // or equivalently:
+    rect2 = {some_point, 8'd9, 8'd1};
+
+    rect3 = rect;
+    fence;
+  }
+}

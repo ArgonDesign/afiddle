@@ -1,0 +1,12 @@
+fsm add {
+  in sync ready u8 p_in; // Input port, registered, with a valid-ready handshake.
+  in u8 addend; // No flow control
+
+  out sync ready u8 p_out; // Output port, registered, with a valid-ready handshake.
+
+  void main() {
+    u8 sum = p_in.read() + addend;
+    p_out.write(sum);
+    fence;
+  }
+}

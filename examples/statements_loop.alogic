@@ -1,0 +1,15 @@
+fsm foo {
+  in u8 p_in;
+
+  void main() {
+    u8 acc = 0;
+
+    loop {
+      acc ^= p_in.read();
+      if (acc == 0)
+        break;
+        // an implicit 'else fence;' is inserted by the compiler
+        // in the 'else' case, the FSM remains in state 1
+    }
+  }
+}

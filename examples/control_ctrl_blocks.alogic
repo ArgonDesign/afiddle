@@ -1,0 +1,29 @@
+fsm foo {
+  u4 a;
+  in sync ready u4 c;
+  out u4 b;
+  out u4 d;
+  out u4 e;
+  out u4 f;
+  out u4 g;
+
+  void main() {
+    a++;          // | Cycle 1
+    b++;          // | Cycle 1
+    c.read();     // | Cycle 1
+                  // |
+    {             // |
+      f++;        // | Cycle 1
+      g++;        // | Cycle 1
+      fence;      // V Cycle 1 ends
+
+      d.write(a);  // | Cycle 2
+      e--;        // | Cycle 2
+      goto foo;   // V Cycle 2 ends
+    }
+  }
+
+  void foo() {
+    fence;
+  }
+}

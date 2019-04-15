@@ -1,0 +1,128 @@
+struct pipeline_stage0_o_t {
+  u32 mul0;
+  u32 mul1;
+  u32 mul2;
+  u32 mul3;    
+}; 
+
+typedef pipeline_stage0_o_t pipeline_stage1_i_t;
+
+struct pipeline_stage1_o_t {
+  u33 sum10;
+  u33 sum32;
+};
+
+typedef pipeline_stage1_o_t pipeline_stage2_i_t;
+
+network dotprod {
+  // 1st input vector
+  in sync ready u16 a0;
+  in sync ready u16 a1;
+  in sync ready u16 a2;
+  in sync ready u16 a3;
+
+  // 2nd input vector
+  in sync ready u16 b0;
+  in sync ready u16 b1;
+  in sync ready u16 b2;
+  in sync ready u16 b3;
+
+  // Output dot product
+  out sync ready u34 p_prod;
+
+  // Notice how pipeline variable declarations
+  // are pushed into the referencing stages
+
+  new fsm stage0 {
+    // The automatically inserted pipeline output port
+    out sync ready pipeline_stage0_o_t pipeline_o;
+
+    // Note that the first stage does not contain a pipeline input port
+
+    // The declarations of the referenced pipeline variables are
+    // pushed into the stage as local varaible declarations
+    u32 mul0;
+    u32 mul1;
+    u32 mul2;
+    u32 mul3;
+
+    void main() {
+      // Read operands, zero-extend them to 32 bits and perform multiplications
+      mul0 = @zx(32, a0.read()) * @zx(32, b0.read());
+      mul1 = @zx(32, a1.read()) * @zx(32, b1.read());
+      mul2 = @zx(32, a2.read()) * @zx(32, b2.read());
+      mul3 = @zx(32, a3.read()) * @zx(32, b3.read());
+
+      // The 'write;' statement is turned into a '.write()' call on the
+      // automatically inserted pipeline output port, carrying the pipeline
+      // variables referenced by later stages
+      pipeline_o.write({mul0, mul1, mul2, mul3});
+
+      fence;
+    }
+  }
+
+  // stage to stage connectsions are turned into pipeline
+  // output port to pipeline input port connections
+  stage0.pipeline_o -> stage1.pipeline_i;
+
+  new fsm stage1 {
+    // The automatically inserted pipeline input port
+    in sync ready pipeline_stage1_i_t pipeline_i;
+
+    // The automatically inserted pipeline output port
+    out sync ready pipeline_stage1_o_t pipeline_o;
+
+    // Declarations of the referenced pipeline variables
+    u32 mul0;
+    u32 mul1;
+    u32 mul2;
+    u32 mul3;
+    u33 sum10;
+    u33 sum32;
+
+    void main() {
+      // The 'read;' statement is turned into a '.read()' call on the
+      // automatically inserted pipeline input port, carrying the pipeline
+      // variables referenced be this or any subsequent stage. The result
+      // of the `.read()' is assigned to the now local pipeline variables
+      {mul0, mul1, mul2, mul3} = pipeline_i.read();
+
+      // Zero-extend to 33 bits and perform 1st level of the reduction
+      sum10 = @zx(33, mul0) + @zx(33, mul1);
+      sum32 = @zx(33, mul2) + @zx(33, mul3);
+
+      // Write pipeline variables referenced by later stages to the
+      // pipeline output port
+      pipeline_o.write({sum10, sum32});
+
+      fence;
+    }
+  }
+
+  stage1.pipeline_o -> stage2.pipeline_i;
+
+  new fsm stage2 {
+    // The automatically inserted pipeline input port
+    in sync ready pipeline_stage2_i_t pipeline_i;
+
+    // Note that the last stage does not contain a pipeline output port
+
+    // Declarations of the referenced pipeline variables
+    u33 sum10;
+    u33 sum32;
+
+    void main() {
+      // Write referenced pipeline variables from previous stage
+      {sum10, sum32} = pipeline_i.read();
+
+      // Zero-extend to 34 bits and perform the final sum
+      u34 prod = {1'd0, sum32} + {1'd0, sum10};
+
+      // Write final result to output port
+      p_prod.write(prod);
+
+      fence;
+    }
+  }
+}

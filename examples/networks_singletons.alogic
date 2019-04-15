@@ -1,0 +1,14 @@
+network foo {
+  out u3 p_out;
+
+  new fsm bar {
+    out u3 p_out;
+
+    void main() {
+        p_out.write(3'd4);
+        fence;
+    }
+  }
+
+  bar.p_out->p_out;
+}

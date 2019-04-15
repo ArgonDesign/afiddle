@@ -1,0 +1,15 @@
+fsm foo {
+  in u3 foo;
+  out u3 a;
+  u3 bar;
+
+  void main() {
+    // Assume foo is u3
+    case (foo) {
+      3'd0, 3'd1, 3'd2: a = 0;
+      bar + 3'd1: a = 1;
+      default: a = 2; // could be placed anywhere in the list
+    }
+    fence;
+  }
+}

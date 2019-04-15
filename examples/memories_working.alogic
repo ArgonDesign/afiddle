@@ -1,0 +1,33 @@
+fsm foo {
+  out u48 concat;
+
+  // declaration:
+  u16 storage[32];
+
+  void main() {
+
+    // To get the value at a memory location, use the indexing syntax:
+    u16 sum = storage[1] + storage[0];
+
+    // Only one write can be performed per cycle:
+
+    storage.write(5'd9, 16'h0123);
+    fence;
+    // storage[9] is now 16'h0123
+
+    storage.write(5'd9, 16'habcd);
+    // The write only commits at the end of the cycle
+
+    u16 x = storage[9]; // 'x' becomes 16'h0123
+    fence;
+
+    u16 y = storage[9]; // 'y' becomes 16'habcd
+    fence;
+
+    // [
+    concat = {sum,x,y};
+    // if sum,x,y are not used they will be optimized out]
+    // ]
+    fence;
+  }
+}

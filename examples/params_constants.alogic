@@ -1,0 +1,12 @@
+fsm baz {
+  out wire u32 a;
+
+  const u32 MAGIC = 32'habcd_0123;
+
+  void main() {
+    a = MAGIC + 32'd1;
+    fence;
+    a = MAGIC - 32'd1;
+    fence;
+  }
+}

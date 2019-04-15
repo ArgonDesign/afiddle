@@ -1,0 +1,14 @@
+fsm foo {
+  in bool p_flag;
+  out wire u3 a;
+
+  void main() {
+
+    a = 3'd0;
+    if (p_flag) {
+      a = 3'd1;
+    }
+
+    fence;
+  }
+}

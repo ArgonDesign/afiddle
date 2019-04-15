@@ -1,0 +1,31 @@
+struct foo_t {
+  bool on;
+  bool off;
+};
+
+fsm foo {
+
+  out wire i16 p_out;
+  // During compilation, a_declared_in_fsm is
+  // compiled in the same way as a.
+  u8 a_declared_in_fsm;
+
+  void main() {
+
+    u8 a;          // Declare 8 bit unsigned integer variable 'a',
+                   // but do not initialize it.
+    i16 b = -'sd2; // Declare 16 bit signed integer variable 'b',
+                   // and initialize it to -2.
+    foo_t bar;     // Declare variable 'bar' of type 'foo_t',
+                   // where 'foo_t' is either a typedef or
+                   // the name of a struct.
+
+    // Compilation details:
+    // Note that a and bar will be compiled as flops,
+    // but b will be compiled as a combinatorial signal.
+
+    p_out.write(b);
+    fence;
+
+  }
+}

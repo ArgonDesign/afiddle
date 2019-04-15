@@ -1,0 +1,16 @@
+fsm nonblocking {
+  in sync ready void p_in;
+
+  u32 cycles = 32'd0;
+  u32 transactions = 32'd0;
+
+  void main() {
+    cycles++;
+
+    if (p_in.valid) {
+      transactions++;
+      p_in.read();
+    }
+    fence;
+  }
+}

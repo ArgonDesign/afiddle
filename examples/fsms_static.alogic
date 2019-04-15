@@ -1,0 +1,25 @@
+fsm static_storage {
+  u8 i;
+  u8 b;
+
+  void main() {
+    i = 0;
+    foo();
+    // At this point b == 3
+  }
+
+  (* reclimit = 4 *)
+  void foo() {
+    u8 a = i;
+    // The C equivalent of the declaration above would be a
+    // combination of a static declaration and an assignment statement:
+    //   static uint8_t a;
+    //   a = i;
+    if (i < 3) {
+      i += 1;
+      foo();
+    }
+    b = a;
+    return;
+  }
+}

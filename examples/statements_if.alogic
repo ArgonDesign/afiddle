@@ -1,0 +1,25 @@
+fsm foo {
+  bool cond;
+  u4 a;
+  u4 b;
+
+  void main() {
+
+    // This if statement...
+    if (cond) {
+      a = 2;
+      b = 3;
+      fence;
+    }
+
+    // ... is equivalent to this one:
+    if (cond) {
+      a = 2;
+      b = 3;
+      fence;
+    } else {
+      fence;
+    }
+
+  }
+}

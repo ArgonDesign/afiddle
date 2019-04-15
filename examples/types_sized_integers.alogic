@@ -1,0 +1,19 @@
+fsm foo {
+  out wire u36 concat;
+  param u32 N = 8;
+
+  void main() {
+
+    int(5)    a = 5'd0; // A 5 bit signed integer
+    uint(8)   b = 8'd0; // An 8 bit unsigned integer
+    uint(N+2) c = 0; // Unsigned integer, with width depending on a parameter.
+
+    i5 d = 0; // Same as 'int(5) d'
+    u8 e = 0; // Same as 'uint(8) e'
+
+    // If left unused, a,b,c,d,e would be optimised out
+    concat = {a,b,c,d,e};
+
+    fence;
+  }
+}

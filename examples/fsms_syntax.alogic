@@ -1,0 +1,17 @@
+fsm add2 {
+
+  // port declarations:
+  in sync u8 p_in;
+  out sync u8 p_out;
+
+  // optional entity variables
+  u10 a;
+  u3 b = 3'd6; // after reset, b will be initialised to 6
+
+  // all FSMs must contain a main function:
+  void main() {
+    u8 x = p_in.read();
+    p_out.write(x + 8'd2);
+    fence; // All functions must end with a control statement
+  }
+}

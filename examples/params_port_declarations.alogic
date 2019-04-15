@@ -1,0 +1,7 @@
+fsm bar {
+  param u32 WIDTH_L2 = 8;
+  const u32 WIDTH = 1<<WIDTH_L2;
+  in sync uint(WIDTH) p_in;
+  out sync uint(2*WIDTH) p_out;
+  // ...
+}

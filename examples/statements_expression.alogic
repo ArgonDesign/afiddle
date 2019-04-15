@@ -1,0 +1,23 @@
+fsm foo {
+  in u2 p_in;
+  out bool p_out;
+  out u3 a;
+  out u3 b;
+
+  void main() {
+
+    p_in.read();
+    // Legal, as '.read()' has a side-effect of reading
+    // the input port, although the read value is discarded.
+
+    p_out.write(1'b1);
+    // Legal, writing to a port is a side-effect
+
+    a + b;
+    // Compiler error: This is a pure expression with
+    // no side-effects.
+
+    fence;
+
+  }
+}

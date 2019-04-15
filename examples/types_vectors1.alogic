@@ -1,0 +1,38 @@
+fsm vectors {
+  out wire u4[8] va_out;
+  out wire u3[6][9] vb_out;
+
+  void main() {
+
+    // Vectors can be defined with one or more dimensions:
+    u4[8] va;
+    u3[6][9] vb;
+
+    // Vectors can be used as a whole:
+    va = 32'd0; // 'va' is a 32-bit variable
+    va <<= 1;
+
+    // Vectors can be indexed and used as elements:
+    // [_] indexing yields the underlying element type (u4)
+    va[0] = 4'd0;
+    va[1] = (va[0] << 1);
+
+    // Vectors can be partially indexed:
+    vb = 162'd0;     // 'vb' is a 162 bit variable
+    vb[0] = 27'd0;   // Partial indexing yields vectors of type u3[9]
+    vb[0][0] = 3'd0; // Full indexing yields primitive elements of type u3
+
+    // All of the following are allowed
+    vb++;         // Increment 'vb' as a 162 bit variable
+    vb[0]++;      // Increment 'vb[0]' as a 27 bit variable
+    vb[0][0]++;   // Increment the 3-bit primitive element
+
+    // [
+    // If va and vb are not used, they will be optimised out:
+    va_out = va;
+    vb_out = vb;
+    fence;
+    // ]
+
+  }
+}

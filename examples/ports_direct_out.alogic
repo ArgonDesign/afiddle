@@ -1,0 +1,10 @@
+fsm foo {
+  out u4 number;
+
+  void main() {
+    number = 4'd3;
+    fence;
+    number = number * number;
+    fence;
+  }
+}

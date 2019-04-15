@@ -1,0 +1,19 @@
+fsm foo {
+  out sync i4 p_out;
+  out bool a;
+
+  void main() {
+
+    i4 y = 4'sd3;
+    p_out.write(y - 4'sd1);
+    a = true; // Same as "a.write(true);"
+
+    // Compilation notes:
+    // Internally, a variable called or__p_out__ip is used
+    // "or" stands for "output register"
+    // "ip" stands for "input" to the output register
+    // On .write, p_out <= or__p_out__ip
+
+    fence;
+  }
+}

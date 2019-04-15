@@ -1,0 +1,12 @@
+fsm a {
+  in sync bool b;
+
+  void main() {
+    b.read(); // This is a combinatorial statement
+    other();  // This is a control statement
+  }
+
+  void other() {
+    fence;
+  }
+}

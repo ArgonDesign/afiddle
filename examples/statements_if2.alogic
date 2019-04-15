@@ -1,0 +1,57 @@
+fsm foo {
+  in u4 p_in_0;
+  u4 a;
+  u4 b;
+  u4 c;
+
+  void main() {
+
+    // Combinatorial if statement:
+    if (a) {
+      b = 2;
+    } else {
+      c = 3;
+    }
+
+    // Control if statement:
+    if (a) {
+      b = p_in_0.read();
+      fence;
+    } else {
+      c = p_in_0.read();
+      fence;
+    }
+
+    // The above is the same as:
+    if (a) {
+      b = p_in_0.read();
+    } else {
+      c = p_in_0.read();
+    }
+    fence;
+
+    // Different branches can contain different numbers of control units
+    if (a) {
+      b = p_in_0.read();
+      fence;
+      b += p_in_0.read();
+      fence;
+    } else {
+      c = p_in_0.read();
+      fence;
+    }
+
+    // This if statement has an implicit else where nothing happens
+    if (a) {
+      b = 2;
+    }
+
+    // This if statement has an implicit else containing a single fence
+    if (a) {
+      b = p_in_0.read();
+      fence;
+      b += p_in_0.read();
+      fence;
+    }
+  }
+}

@@ -1,0 +1,33 @@
+// typedef <existing type> <new type>;
+
+struct point_t {
+  u16 x;
+  u16 y;
+};
+
+struct rect_t {
+  point_t topleft;
+  u8 width;
+  u8 height;
+};
+
+fsm foo {
+
+  param u32 N = 8;
+
+  void main() {
+
+    // These will all compile into flip-flops (with _q and _d):
+    bool a;
+    u8 b;
+    i5 c;
+    uint(N) d;
+    point_t e;
+    rect_t f;
+    u4[8] va;
+    u3[6][9] vb;
+
+    fence;
+
+  }
+}

@@ -1,0 +1,44 @@
+fsm dfifo {
+  in  sync ready               u8 p_in;
+  out sync ready bslice fslice u8 p_out;
+
+  // The full/empty status bits
+  bool full = false;
+  bool empty = true;
+
+  // The backing distributed memory
+  u8 storage[32];
+
+  // The read and write pointers
+  u5 rdptr = 5'd0;
+  u5 wrptr = 5'd0;
+
+  void main() {
+    // Check whether we can read or write this cycle
+    bool rd = !p_out.full && !empty;
+    bool wr = p_in.valid && !full;
+
+    // Do the read if required
+    if (rd) {
+      p_out.write(storage[rdptr]);
+      rdptr++;
+    }
+
+    // Do the write if required
+    if (wr) {
+      storage.write(wrptr, p_in.read());
+      wrptr++;
+    }
+
+    // Check if the pointers are equal
+    bool eq = rdptr == wrptr;
+
+    // full/empty only change if reading or writing on a cycle but not both
+    if (rd ^ wr) {
+      full = wr & eq;
+      empty = rd & eq;
+    }
+
+    fence;
+  }
+}

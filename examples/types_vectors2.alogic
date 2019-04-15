@@ -1,0 +1,63 @@
+fsm vectors {
+  // [
+  // If a1, a2 etc are not used, they will be optimised out
+  out wire u8 a1;
+  out wire u8 a2;
+  out wire u8 b1;
+  out wire u8 b2;
+  out wire u8 c1;
+  out wire u8 c2;
+  out wire u8 d1;
+  out wire u8 d2;
+  out wire u8 e1;
+  out wire u8 e2;
+  out wire u8 f1;
+  out wire u8 f2;
+  out wire u8 g1;
+  out wire u8 g2;
+  out wire u8 h1;
+  out wire u8 h2;
+  // ]
+
+  void main() {
+
+    u2[3][4] x = 24'd0;
+    u24 y = x;
+
+    // the following equivalencies hold
+
+    a1 = x[0];
+    a2 = y[7:0];
+
+    b1 = x[1];
+    b2 = y[15:8];
+
+    c1 = x[2];
+    c2 = y[23:16];
+
+    // Lowest element
+    d1 = x[0][0];
+    d2 = y[1:0];
+
+    // A middle element
+    e1 = x[1][2];
+    e2 = y[13:12];
+
+    // Highest element
+    f1 = x[2][3];
+    f2 = y[23:22];
+
+    // LSB
+    g1 = x[0][0][0];
+    g2 = y[0];
+
+    // MSB
+    h1 = x[2][3][1];
+    h2 = y[23];
+
+    // x[i][j][k] == y[8*i + 2*j + k];
+
+    fence;
+
+  }
+}

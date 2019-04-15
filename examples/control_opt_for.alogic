@@ -1,0 +1,19 @@
+fsm foo {
+  out u4 a;
+  out u4 b;
+
+  void main() {
+    a++;      // | Cycle 1
+    other();  // V Cycle 1 ends - Cycle 2 begins at control function 'other'
+
+    loop {    // - Due to the loop header optimization, Cycle 3 does not end here
+      b++;    // | Cycle 3
+      break;  // V Cycle 3 ends here
+    }
+  }
+
+  void other() {
+    b++;      // | Cycle 2
+    return;   // V Cycle 2 ends - Cycle 3 begins at the call site
+  }
+}

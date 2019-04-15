@@ -1,0 +1,12 @@
+fsm combinatorial {
+ out wire bool a;
+
+ void main() {
+    a = false;
+    // a is now false
+    fence;
+    a = true;
+    // a is now true
+    fence;
+ }
+}

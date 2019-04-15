@@ -1,0 +1,9 @@
+fsm foo {
+  in sync       void a;
+  in sync ready void b;
+
+  out sync       void c;
+  out sync ready void d;
+
+  // ...
+}

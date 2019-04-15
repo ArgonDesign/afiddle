@@ -1,0 +1,25 @@
+network foo {
+
+  in u4 p_in;
+  out u4 p_out;
+  pipeline u4 a;
+
+  new fsm pipea {
+    void main() {
+      a = p_in.read() + 4'd1;
+      write; // write pipeline variable to pipeb
+      fence;
+    }
+  }
+
+  pipea -> pipeb; // Connect pipeline ports
+
+  new fsm pipeb {
+    void main() {
+      read; // read pipeline variable from pipea
+      a = a*4'd3;
+      p_out.write(a);
+      fence;
+    }
+  }
+}

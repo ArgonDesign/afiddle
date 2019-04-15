@@ -1,0 +1,16 @@
+fsm foo {
+  out u4 a;
+  out u4 b;
+
+  void main() {
+    u2 i = 2'd0;        // | Cycle 1
+                        // |
+    do {                // V Cycle 1 ends, 'do' loop is always entered
+      a++;              // | Cycle 2 (i == 0)         | Cycle 3 (i == 1)
+      i++;              // | Cycle 2 (i becomes 1)    | Cycle 3 (i becomes 2)
+    } while (i < 2'd2); // V Cycle 2 end - loopback   V Cycle 3 ends - loop exit
+
+    b++;                // | Cycle 4
+    fence;              // V Cycle 4
+  }
+}

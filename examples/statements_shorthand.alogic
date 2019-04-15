@@ -1,0 +1,17 @@
+fsm foo {
+  u4 a;
+  u4 b;
+  bool sign;
+  u5 abs;
+
+  void main() {
+    a >>= 2;
+    b[2] -= a;
+    {sign, abs} += 1;
+
+    a++;
+    {sign, abs}--;
+
+    fence;
+  }
+}

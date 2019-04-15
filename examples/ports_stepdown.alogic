@@ -1,0 +1,17 @@
+fsm stepdown {
+  in  sync ready u1024 huge;
+  out sync ready  u256 less;
+
+  void main() {
+    huge.wait();
+    less.write(huge[  0 +: 256]);
+    fence;
+    less.write(huge[256 +: 256]);
+    fence;
+    less.write(huge[512 +: 256]);
+    fence;
+    huge.read();
+    less.write(huge[768 +: 256]);
+    fence;
+  }
+}

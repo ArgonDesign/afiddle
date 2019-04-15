@@ -1,0 +1,16 @@
+fsm foo {
+  out u4 a;
+  out u4 b;
+  out u4 c;
+
+  void main() {
+    a++;      // | Cycle 1
+    b++;      // | Cycle 1
+    fence;    // V Cycle 1 ends
+
+    loop {    // - Loop header optimization: No new state required
+      c++;    // | Cycle 2
+      break;  // V Cycle 2 ends
+    }
+  }
+}

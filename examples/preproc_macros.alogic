@@ -1,0 +1,13 @@
+#define MAGIC 4'd4
+// at compile time, all instances of MAGIC will be replaced
+// with the text "4'd4"
+
+fsm magical {
+  u4 a = MAGIC;
+  out u4 b;
+  
+  void main() {
+    // ...
+    fence;
+  }
+}

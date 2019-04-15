@@ -1,0 +1,10 @@
+fsm foo {
+  u5 a;
+  out bool p_out;
+
+  void main() {
+    for (a = 5'd0; a < 5'd5 ; a++) {
+       p_out.write(a[0]);
+    }
+  }
+}

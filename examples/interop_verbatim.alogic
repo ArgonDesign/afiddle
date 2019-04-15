@@ -1,0 +1,13 @@
+fsm v {
+  void main() {
+    // ...
+    fence;
+  }
+
+  verbatim verilog {
+    // Tick away
+    always @(posedge clk) begin
+      $display("tick");
+    end
+  }
+}

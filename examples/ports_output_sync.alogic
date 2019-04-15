@@ -1,0 +1,13 @@
+fsm syncports {
+  out sync      bool a;
+  out sync wire bool b;
+
+  void main() {
+    a.write(false);
+    b.write(false);
+    fence;
+    a.write(true);
+    b.write(true);
+    fence;
+  }
+}

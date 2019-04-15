@@ -1,0 +1,7 @@
+fsm foo {
+
+  void main() {
+    $display("Help!");
+    fence;
+  }
+}
