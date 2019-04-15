@@ -20,8 +20,8 @@
 
 # Attempts to reproduce package versions of afiddle running on Athene
 
-FROM node:4.7.3
-# Linux is Debian 8.7 (jessie)
+FROM node:6.17-stretch
+# Linux is Debian 9 (stretch)
 # Includes nodejs, npm and git
 
 MAINTAINER Steve Barlow <steve.barlow@argondesign.com>
@@ -29,9 +29,7 @@ MAINTAINER Steve Barlow <steve.barlow@argondesign.com>
 RUN apt-get update
 
 # Install JDK 8 (Java 1.8.x)
-RUN echo "deb http://ftp.debian.org/debian jessie-backports main" | tee -a /etc/apt/sources.list.d/jdk.list
-RUN apt-get update
-RUN apt-get -t jessie-backports install -y openjdk-8-jdk
+RUN apt-get install -y openjdk-8-jdk
 
 # Install sbt 1.1.0
 RUN echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list

@@ -92,12 +92,42 @@ https://console.cloud.google.com/logs/viewer?resource=container%2Fcluster_name%2
 
 ![Screenshot of Log in Console](screenshot_log.png)
 
+
 Updating
 --------
 
 The pods can be automatically updated (in a rolling fashion if the cluster has more than one node) to a new Docker image.
 
+Tag and upload a new V<n+1> image as per step 1. To see what tag versions are already uploaded, set your credentials as per step 1 and then use `gcloud beta container images list-tags gcr.io/argon-design/afiddle`.
+
+Then to switch to the new image:
+
 ```bash
-$ gcloud docker -- push gcr.io/argon-design/afiddle:V<n+1>
 $ kubectl set image deployment/afiddle-web afiddle-web=gcr.io/argon-design/afiddle:V<n+1>
+```
+
+Finally, delete the previous tagged image to avoid it taking up space in the cloud. The best way to do this is from the web console https://console.cloud.google.com/gcr/images/argon-design.
+
+
+Deleting Everything on GCP
+--------------------------
+
+Delete the service and wait for the Cloud Load Balancer to be deallocated. Then delete the container cluster and the reserved external IP address.
+
+```bash
+# Delete the service:
+$ kubectl delete service afiddle-web
+
+# Wait for load balancer to be deleted by polling until <AFIDDLE-IP> is no longer mentioned in:
+$ gcloud compute forwarding-rules list
+
+# Delete the container cluster:
+$ gcloud container clusters delete afiddle-cluster
+
+# Delete images
+# No way of doing this using gcloud without finding all their digest hashes
+# Best to do from web console https://console.cloud.google.com/gcr/images/argon-design
+
+# Delete reserved external IP address:
+$ gcloud compute addresses delete afiddle-ip --region europe-west1
 ```
