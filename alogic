@@ -1,4 +1,4 @@
-#!/bin/bash
+./al#!/bin/bash
 # *******************************************************************************
 # Argon Design Ltd. Project P8009 Alogic
 # (c) Copyright 2017 Argon Design Ltd. All rights reserved.
@@ -18,7 +18,7 @@ ALOGIC_REMOTE="https://github.com/ArgonDesign/alogic.git"
 update () {
   echo "$@"
   set -e
-  local REF=$1; [[ -n $REF ]] || REF=3.0.x
+  local REF=$1; [[ -n $REF ]] || REF=4.0.x
   if [[ ! -e "$ALOGIC_DIR" ]]; then
     mkdir -p "$ALOGIC_DIR"
     cd "$ALOGIC_DIR"

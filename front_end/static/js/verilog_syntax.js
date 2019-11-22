@@ -79,9 +79,9 @@ define({
 
     // define our own brackets as '<' and '>' do not match in Verilog
     brackets: [
-      [ '(', ')', 'bracket.parenthesis' ],
-      [ '{', '}', 'bracket.curly' ],
-      [ '[', ']', 'bracket.square' ]
+      ['(', ')', 'bracket.parenthesis'],
+      ['{', '}', 'bracket.curly'],
+      ['[', ']', 'bracket.square']
     ],
 
     // we include these common regular expressions
@@ -94,58 +94,66 @@ define({
     tokenizer: {
       root: [
         // identifiers and keywords
-        [ /[A-Za-z_$][A-Za-z0-9_$]*/, { cases: { '@preprocessorKeywords': 'type',
-          '@keywords': 'keyword',
-          '@builtinFunctionKeywords': 'predefined',
-          '@default': 'identifier' } } ],
+        [/[A-Za-z_$][A-Za-z0-9_$]*/, {
+          cases: {
+            '@preprocessorKeywords': 'type',
+            '@keywords': 'keyword',
+            '@builtinFunctionKeywords': 'predefined',
+            '@default': 'identifier'
+          }
+        }],
 
         // whitespace
         { include: '@whitespace' },
 
         // delimiters and operators
-        [ /[{}()[\]]/, '@brackets' ],
-        [ /@symbols/, { cases: { '@operators': 'operator',
-          '@default': '' } } ],
+        [/[{}()[\]]/, '@brackets'],
+        [/@symbols/, {
+          cases: {
+            '@operators': 'operator',
+            '@default': ''
+          }
+        }],
 
         // numbers
-        [ /[0-9]*'[sS]?[bodhBODH][0-9a-fA-F_]+/, 'number' ],
-        [ /[0-9][0-9_]*/, 'number' ],
-        [ /\d*\.\d+([eE][-+]?\d+)?/, 'number.float' ],
+        [/[0-9]*'[sS]?[bodhBODH][0-9a-fA-F_]+/, 'number'],
+        [/[0-9][0-9_]*/, 'number'],
+        [/\d*\.\d+([eE][-+]?\d+)?/, 'number.float'],
 
         // delimiter: after number because of .\d floats
-        [ /[;,.]/, 'delimiter' ],
+        [/[;,.]/, 'delimiter'],
 
         // strings
-        [ /"([^"\\]|\\.)*$/, 'string.invalid' ],  // non-teminated string
-        [ /"/, { token: 'string.quote', bracket: '@open', next: '@string' } ],
+        [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-teminated string
+        [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
 
         // attributes
-        [ /\(\*/, { token: 'attribute.open', bracket: '@open', next: '@attribute' } ]
+        [/\(\*/, { token: 'attribute.open', bracket: '@open', next: '@attribute' }]
       ],
 
       comment: [
-        [ /[^/*]+/, 'comment' ],
-        [ /\/\*/, 'comment', '@push' ],    // nested comment
-        [ '\\*/', 'comment', '@pop' ],
-        [ /[/*]/, 'comment' ]
+        [/[^/*]+/, 'comment'],
+        [/\/\*/, 'comment', '@push'], // nested comment
+        ['\\*/', 'comment', '@pop'],
+        [/[/*]/, 'comment']
       ],
 
       attribute: [
-        [ /.+/, 'attribute' ],
-        [ /\*\)/, { token: 'attribute.close', bracket: '@close', next: '@pop' } ]
+        [/.+/, 'attribute'],
+        [/\*\)/, { token: 'attribute.close', bracket: '@close', next: '@pop' }]
       ],
 
       string: [
-        [ /[^\\"]+/, 'string' ],
-        [ /@escapes/, 'string.escape' ],
-        [ /\\./, 'string.escape.invalid' ],
-        [ /"/, { token: 'string.quote', bracket: '@close', next: '@pop' } ]
+        [/[^\\"]+/, 'string'],
+        [/@escapes/, 'string.escape'],
+        [/\\./, 'string.escape.invalid'],
+        [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
       ],
 
       whitespace: [
-        [ /[ \t\r\n]+/, 'white' ],
-        [ /\/\*/, 'comment', '@comment' ],
-        [ /\/\/.*$/, 'comment' ]
+        [/[ \t\r\n]+/, 'white'],
+        [/\/\*/, 'comment', '@comment'],
+        [/\/\/.*$/, 'comment']
       ]
     }
 

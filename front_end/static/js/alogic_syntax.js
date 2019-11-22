@@ -31,9 +31,10 @@ define({
     keywords: [
       'fsm', 'network', 'pipeline', 'typedef', 'struct', 'in', 'out', 'const',
       'param', 'fence', 'true', 'false', 'loop', 'while', 'do', 'for', 'if',
-      'goto', 'else', 'break', 'return', 'case', 'default', 'verilog', 'new',
+      'goto', 'else', 'break', 'continue', 'return', 'case', 'default', 'new',
       'let', 'entity', 'static', 'stall', 'comb', 'stack', 'sram', 'reg',
-      'sync', 'ready', 'accept', 'wire', 'bubble', 'fslice', 'bslice', 'verbatim'
+      'signed', 'unsigned', 'gen', 'type', 'assert', 'sync', 'ready', 'accept',
+      'wire', 'bubble', 'fslice', 'bslice', 'verbatim', 'verilog'
     ],
 
     typeKeywords: [
@@ -44,16 +45,16 @@ define({
 
     operators: [
       '->', '*', '/', '%', '+', '-', '~', '&', '~&', '|', '~|', '^', '~^',
-      '<<', '>>', '>>>', '!', '&&', '||', '==', '!=', '>', '>=', '<=', '<',
-      '?', '++', '--', '=', '+=', '-=', '&=', '|=', '^=', '>>=', '<<=',
-      '>>>='
+      '<<', '>>', '>>>', '<<<', '!', '&&', '||', '==', '!=', '>', '>=', '<=',
+      '<', '?', '++', '--', '=', '*=', '/=', '%=', '+=', '-=', '&=', '|=',
+      '^=', '>>=', '<<=', '>>>=', '<<<='
     ],
 
     // define our own brackets as '<' and '>' do not match in Alogic
     brackets: [
-      [ '(', ')', 'bracket.parenthesis' ],
-      [ '{', '}', 'bracket.curly' ],
-      [ '[', ']', 'bracket.square' ]
+      ['(', ')', 'bracket.parenthesis'],
+      ['{', '}', 'bracket.curly'],
+      ['[', ']', 'bracket.square']
     ],
 
     // we include these common regular expressions
@@ -66,69 +67,77 @@ define({
     tokenizer: {
       root: [
         // embedded Verilog
-        [ /(verilog)(\s*)(\{)/, [
+        [/(verilog)(\s*)(\{)/, [
           'keyword',
           'white',
-          { token: '@brackets', next: '@verilog' } ]
+          { token: '@brackets', next: '@verilog' }]
         ],
 
         // identifiers and keywords
-        [ /@shortTypeKeywords/, 'type' ],
-        [ /[A-Za-z_$][A-Za-z0-9_$]*/, { cases: { '@typeKeywords': 'type',
-          '@keywords': 'keyword',
-          '@default': 'identifier' } } ],
+        [/@shortTypeKeywords/, 'type'],
+        [/[A-Za-z_$][A-Za-z0-9_$]*/, {
+          cases: {
+            '@typeKeywords': 'type',
+            '@keywords': 'keyword',
+            '@default': 'identifier'
+          }
+        }],
 
         // whitespace
         { include: '@whitespace' },
 
         // delimiters and operators
-        [ /[{}()[\]]/, '@brackets' ],
-        [ /@symbols/, { cases: { '@operators': 'operator',
-          '@default': '' } } ],
+        [/[{}()[\]]/, '@brackets'],
+        [/@symbols/, {
+          cases: {
+            '@operators': 'operator',
+            '@default': ''
+          }
+        }],
 
         // numbers
-        [ /[0-9]*'s?[bdh][0-9a-fA-F_]+/, 'number' ],
-        [ /[0-9][0-9_]*/, 'number' ],
+        [/[0-9]*'s?[bdh][0-9a-fA-F_]+/, 'number'],
+        [/[0-9][0-9_]*/, 'number'],
 
         // delimiter: after number because of .\d floats
-        [ /[;,.]/, 'delimiter' ],
+        [/[;,.]/, 'delimiter'],
 
         // strings
-        [ /"([^"\\]|\\.)*$/, 'string.invalid' ],  // non-teminated string
-        [ /"/, { token: 'string.quote', bracket: '@open', next: '@string' } ]
+        [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-teminated string
+        [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }]
 
       ],
 
       // Embedded Verilog is coloured as a constant
       verilog: [
-        [ /[^{}]+/, 'constant' ],
-        [ /\{/, { token: 'constant', next: '@verilog2' } ],
-        [ /\}/, { token: 'bracket', bracket: '@close', next: '@pop' } ]
+        [/[^{}]+/, 'constant'],
+        [/\{/, { token: 'constant', next: '@verilog2' }],
+        [/\}/, { token: 'bracket', bracket: '@close', next: '@pop' }]
       ],
       verilog2: [
-        [ /[^{}]+/, 'constant' ],
-        [ /\{/, { token: 'constant', next: '@verilog2' } ],
-        [ /\}/, { token: 'constant', next: '@pop' } ]
+        [/[^{}]+/, 'constant'],
+        [/\{/, { token: 'constant', next: '@verilog2' }],
+        [/\}/, { token: 'constant', next: '@pop' }]
       ],
 
       comment: [
-        [ /[^/*]+/, 'comment' ],
-        [ /\/\*/, 'comment', '@push' ],    // nested comment
-        [ '\\*/', 'comment', '@pop' ],
-        [ /[/*]/, 'comment' ]
+        [/[^/*]+/, 'comment'],
+        [/\/\*/, 'comment', '@push'], // nested comment
+        ['\\*/', 'comment', '@pop'],
+        [/[/*]/, 'comment']
       ],
 
       string: [
-        [ /[^\\"]+/, 'string' ],
-        [ /@escapes/, 'string.escape' ],
-        [ /\\./, 'string.escape.invalid' ],
-        [ /"/, { token: 'string.quote', bracket: '@close', next: '@pop' } ]
+        [/[^\\"]+/, 'string'],
+        [/@escapes/, 'string.escape'],
+        [/\\./, 'string.escape.invalid'],
+        [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
       ],
 
       whitespace: [
-        [ /[ \t\r\n]+/, 'white' ],
-        [ /\/\*/, 'comment', '@comment' ],
-        [ /\/\/.*$/, 'comment' ]
+        [/[ \t\r\n]+/, 'white'],
+        [/\/\*/, 'comment', '@comment'],
+        [/\/\/.*$/, 'comment']
       ]
     }
 

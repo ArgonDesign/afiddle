@@ -67,15 +67,15 @@
 default: build
 
 build:
-	npm install --unsafe-perm
-	node_modules/.bin/bower --allow-root install
+	npm install
+	cd front_end ; npm install
 	./alogic update
 
 clean:
-	rm -rf alogic_install node_modules bower_components runpen logs
+	rm -rf alogic_install node_modules front_end/node_modules runpen logs
 
 standard:
-	node_modules/.bin/standard *.js static/js/*.js
+	node_modules/.bin/standard *.js front_end/static/js/*.js
     
 dockerbuild:
 	docker build --no-cache -t afiddle .

@@ -207,7 +207,7 @@ if (commander.logging === 'stackdriver') {
   transports.push(fileTransport)
 }
 
-var logger = new winston.Logger({
+var logger = winston.createLogger({
   transports: transports,
   exitOnError: false
 })
@@ -224,15 +224,15 @@ logger.stream = {
 const app = express()
 
 // Using :req[X-Forwarded-For] rather than :remote-addr so correctly logs IP addresses when used via ngrok
-app.use(morgan(':req[X-Forwarded-For] :method :url :status :response-time ms', { 'stream': logger.stream }))
+app.use(morgan(':req[X-Forwarded-For] :method :url :status :response-time ms', { stream: logger.stream }))
 
-app.use(express.static(path.join(__dirname, 'static')))
+app.use(express.static(path.join(__dirname, 'front_end/static')))
+app.use(express.static(path.join(__dirname, 'front_end/node_modules')))
 app.use(express.static(path.join(__dirname, 'node_modules')))
-app.use(express.static(path.join(__dirname, 'bower_components')))
 
 app.engine('mustache', mustacheExpress())
 app.set('view engine', 'mustache')
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', path.join(__dirname, 'front_end/views'))
 
 app.use(bodyParser.text({ type: 'text/alogic' }))
 
@@ -244,13 +244,13 @@ const ALOGIC = path.join(__dirname, 'alogic')
 // Get Alogic version string
 var alogicVersion
 exec(ALOGIC + ' --version')
-.then(function (std) {
-  alogicVersion = std.stdout
-})
-.catch(function (error) {
-  console.error(error.message.trim())
-  process.exit(1)
-})
+  .then(function (std) {
+    alogicVersion = std.stdout
+  })
+  .catch(function (error) {
+    console.error(error.message.trim())
+    process.exit(1)
+  })
 
 //
 // *** ENDPOINT '/' - Serve main HTML page
@@ -268,24 +268,24 @@ app.get('/', function (req, res) {
   exampleFileName = path.basename(exampleFileName)
   var exampleText
   fs.readFile(path.join(__dirname, 'examples', exampleFileName), 'utf8')
-  .then(function (result) {
-    exampleText = result
-  })
-  .catch(function () {
-    exampleText = ''
-  })
-  .then(function () {
-    // Place text in quotes, converting newlines to '\n's and escaping quotes
-    var txt = exampleText
-      .replace(/\n/g, '\\n')
-      .replace(/"/g, '\\"')
-    var quotedExampleText = '"' + txt + '"'
-    res.render('index', { version: alogicVersion, exampleText: quotedExampleText })
-  })
-  .catch(function (error) {
-    logger.log('error', error.message.trim())
-    res.sendStatus(500)
-  })
+    .then(function (result) {
+      exampleText = result
+    })
+    .catch(function () {
+      exampleText = ''
+    })
+    .then(function () {
+      // Place text in quotes, converting newlines to '\n's and escaping quotes
+      var txt = exampleText
+        .replace(/\n/g, '\\n')
+        .replace(/"/g, '\\"')
+      var quotedExampleText = '"' + txt + '"'
+      res.render('index', { version: alogicVersion, exampleText: quotedExampleText })
+    })
+    .catch(function (error) {
+      logger.log('error', error.message.trim())
+      res.sendStatus(500)
+    })
 })
 
 //
@@ -315,54 +315,54 @@ app.post('/compile', function (req, res) {
     dir = path.join(RUNPENDIR, pad(runNum, 4))
     runNum += 1
     fs.mkdir(dir)
-    .then(function () {
-      srcDir = path.join(dir, 'alogic')
-      return fs.mkdir(srcDir)
-    })
-    .then(function () {
-      destDir = path.join(dir, 'verilog')
-      return fs.mkdir(destDir)
-    })
-    .then(function () {
-      srcFile = path.join(srcDir, entity + '.alogic')
-      return fs.writeFile(srcFile, req.body)
-    })
-    .then(function () {
-      return exec(ALOGIC + ' -o ' + destDir + ' -y ' + srcDir + ' ' + entity)
-      .then(function (std) {
-        // Compile success. Results are in files in destDir
-        return 'success'
+      .then(function () {
+        srcDir = path.join(dir, 'alogic')
+        return fs.mkdir(srcDir)
+      })
+      .then(function () {
+        destDir = path.join(dir, 'verilog')
+        return fs.mkdir(destDir)
+      })
+      .then(function () {
+        srcFile = path.join(srcDir, entity + '.alogic')
+        return fs.writeFile(srcFile, req.body)
+      })
+      .then(function () {
+        return exec(ALOGIC + ' -o ' + destDir + ' -y ' + srcDir + ' ' + entity)
+          .then(function (std) {
+            // Compile success. Results are in files in destDir
+            return 'success'
+          })
+          .catch(function (error) {
+            // alogic compiler reports errors on stderr
+            var errorMessages = error.stderr
+              // Tidy up path shown in error messages. Convert output like
+              // /home/sjb/P8009_Alogic/afiddle/runpen/0000/alogic/input.alogic:2: ERROR: ...
+              // to input.alogic:2: ERROR: ...
+              .replace(/(^|\n).*[/]runpen[/]\d\d\d\d[/]alogic[/]/g, '')
+            return errorMessages
+          })
+      })
+      .then(function (result) {
+        if (result === 'success') {
+          // run tail to get file contents and combine all files if there is more than one
+          return exec('cd ' + destDir + ' ; tail -n +1 *')
+            .then(function (std) {
+              return std.stdout
+            })
+        } else {
+          return 'Compilation errors occurred:\n' + result
+        }
+      })
+      .then(function (result) {
+        logger.log('verbose', 'result:\n' + result.trim())
+        res.send(result)
+        fs.remove(dir)
       })
       .catch(function (error) {
-        // alogic compiler reports errors on stderr
-        var errorMessages = error.stderr
-          // Tidy up path shown in error messages. Convert output like
-          // /home/sjb/P8009_Alogic/afiddle/runpen/0000/alogic/input.alogic:2: ERROR: ...
-          // to input.alogic:2: ERROR: ...
-          .replace(/(^|\n).*[/]runpen[/]\d\d\d\d[/]alogic[/]/g, '')
-        return errorMessages
+        logger.log('error', error.message.trim())
+        res.sendStatus(500)
       })
-    })
-    .then(function (result) {
-      if (result === 'success') {
-        // run tail to get file contents and combine all files if there is more than one
-        return exec('cd ' + destDir + ' ; tail -n +1 *')
-        .then(function (std) {
-          return std.stdout
-        })
-      } else {
-        return 'Compilation errors occurred:\n' + result
-      }
-    })
-    .then(function (result) {
-      logger.log('verbose', 'result:\n' + result.trim())
-      res.send(result)
-      fs.remove(dir)
-    })
-    .catch(function (error) {
-      logger.log('error', error.message.trim())
-      res.sendStatus(500)
-    })
   }
 })
 

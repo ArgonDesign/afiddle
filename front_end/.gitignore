@@ -7,10 +7,7 @@
 # $Id:$
 #
 # DESCRIPTION:
-# Files/directories not to copy into docker image
+# Files/directories not to check in to git
 # *******************************************************************************
 
-alogic_install
-logs
 node_modules
-runpen

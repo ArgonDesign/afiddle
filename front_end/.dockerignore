@@ -10,7 +10,4 @@
 # Files/directories not to copy into docker image
 # *******************************************************************************
 
-alogic_install
-logs
 node_modules
-runpen
