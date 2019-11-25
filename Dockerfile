@@ -18,24 +18,25 @@
 # https://www.scala-sbt.org/1.0/docs/Installing-sbt-on-Linux.html
 # https://groups.google.com/forum/#!topic/grpc-io/4uuSRqfyDxY
 
-# Attempts to reproduce package versions of afiddle running on Athene
+# Attempts to reproduce package versions of afiddle running on Sisyphus
 
-FROM node:6.17-stretch
-# Linux is Debian 9 (stretch)
+FROM node:12.13.1-buster
+# Linux is Debian 10 (buster)
 # Includes nodejs, npm and git
 
 MAINTAINER Steve Barlow <steve.barlow@argondesign.com>
 
 RUN apt-get update
 
-# Install JDK 8 (Java 1.8.x)
-RUN apt-get install -y openjdk-8-jdk
+# Install JDK 11 (Java 1.11.x)
+# N.B. This is newer than Sisyphus which is running 1.8.0. That isn't available directly on Buster because of a security issue
+RUN apt-get install -y openjdk-11-jdk-headless
 
-# Install sbt 1.1.0
+# Install sbt 1.2.8
 RUN echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
 RUN apt-get update
-RUN apt-get install -y sbt=1.1.0
+RUN apt-get install -y sbt=1.2.8
 RUN sbt sbtVersion
 
 # Add afiddle files

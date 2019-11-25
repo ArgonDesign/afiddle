@@ -76,7 +76,7 @@ require(['jquery', 'goldenlayout', 'vs/editor/editor.main'], function ($, Golden
     verilogSyntax.monarchDefinition.tokenizer.root.unshift([/Compilation errors occurred:/, { token: 'invalid', next: '@errors' }])
     verilogSyntax.monarchDefinition.tokenizer.errors = [[/./, 'invalid']]
     // (c) There is no output yet, just the initial message
-    verilogSyntax.monarchDefinition.tokenizer.root.unshift([/Verilog code output here\.\.\./, 'attribute'])
+    verilogSyntax.monarchDefinition.tokenizer.root.unshift([/Verilog code output here\.\.\./, 'annotation'])
 
     monaco.languages.setMonarchTokensProvider('verilogOrOutput', verilogSyntax.monarchDefinition)
   })

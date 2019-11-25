@@ -98,7 +98,7 @@ Updating
 
 The pods can be automatically updated (in a rolling fashion if the cluster has more than one node) to a new Docker image.
 
-Tag and upload a new V<n+1> image as per step 1. To see what tag versions are already uploaded, set your credentials as per step 1 and then use `gcloud beta container images list-tags gcr.io/argon-design/afiddle`.
+Tag and upload a new V<n+1> image as per step 1. To see what tag versions are already uploaded, set your credentials as per step 1 and then use `gcloud container images list-tags gcr.io/argon-design/afiddle`.
 
 Then to switch to the new image:
 
@@ -106,7 +106,7 @@ Then to switch to the new image:
 $ kubectl set image deployment/afiddle-web afiddle-web=gcr.io/argon-design/afiddle:V<n+1>
 ```
 
-Finally, delete the previous tagged image to avoid it taking up space in the cloud. The best way to do this is from the web console https://console.cloud.google.com/gcr/images/argon-design.
+Finally, delete the previous tagged image to avoid it taking up space in the cloud. The best way to do this is from the web console https://console.cloud.google.com/gcr/images/argon-design. If you want to do this from the command line, first get the 12-digit digest of the image you want to delete from `gcloud container images list-tags gcr.io/argon-design/afiddle` and then use `gcloud container images delete --force-delete-tags gcr.io/argon-design/afiddle@sha256:<digest-12-digits>` and confirm with `Y` at the prompt.
 
 
 Deleting Everything on GCP

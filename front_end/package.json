@@ -11,6 +11,7 @@
   "dependencies": {
     "golden-layout": "^1.5.9",
     "jquery": "^3.4.1",
+    "monaco-editor": "^0.18.1",
     "requirejs": "^2.3.6"
   }
 }

@@ -41,7 +41,9 @@ define({
       'void', 'bool', 'uint', 'int'
     ],
 
-    shortTypeKeywords: /[ui]\d+/,
+    builtinFunctionKeywords: [
+      '$clog2', '$signed', '$unsigned', '@bits', '@msb', '@ex', '@zx', '@sx'
+    ],
 
     operators: [
       '->', '*', '/', '%', '+', '-', '~', '&', '~&', '|', '~|', '^', '~^',
@@ -73,12 +75,13 @@ define({
           { token: '@brackets', next: '@verilog' }]
         ],
 
-        // identifiers and keywords
-        [/@shortTypeKeywords/, 'type'],
-        [/[A-Za-z_$][A-Za-z0-9_$]*/, {
+        // keywords and identifiers
+        [/[A-Za-z_$@][A-Za-z0-9_$@]*/, {
           cases: {
+            '[ui]\\d+': 'type', // Shorthand u8 etc.
             '@typeKeywords': 'type',
             '@keywords': 'keyword',
+            '@builtinFunctionKeywords': 'keyword',
             '@default': 'identifier'
           }
         }],

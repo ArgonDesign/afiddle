@@ -228,7 +228,6 @@ app.use(morgan(':req[X-Forwarded-For] :method :url :status :response-time ms', {
 
 app.use(express.static(path.join(__dirname, 'front_end/static')))
 app.use(express.static(path.join(__dirname, 'front_end/node_modules')))
-app.use(express.static(path.join(__dirname, 'node_modules')))
 
 app.engine('mustache', mustacheExpress())
 app.set('view engine', 'mustache')
@@ -370,7 +369,7 @@ app.post('/compile', function (req, res) {
 // *** ENDPOINT '/privacy' - Serve privacy HTML page
 //
 app.get('/privacy', function (req, res) {
-  res.sendFile('static/privacy.html', { root: __dirname })
+  res.sendFile('front_end/static/privacy.html', { root: __dirname })
 })
 
 // Finally, start the server

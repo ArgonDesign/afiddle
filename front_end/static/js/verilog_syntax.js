@@ -93,7 +93,7 @@ define({
     // The main tokenizer for Verilog
     tokenizer: {
       root: [
-        // identifiers and keywords
+        // keywords and identifiers
         [/[A-Za-z_$][A-Za-z0-9_$]*/, {
           cases: {
             '@preprocessorKeywords': 'type',

@@ -69,39 +69,42 @@ Webserver Endpoints
 
 The main server endpoint is `/`. This serves the HTML for the page, which pulls in the CSS and Javascript code. The example code in the source window prior to editing can be set by adding a query string. `/?example=<filename>` sets it from the file `examples/<filename>`. If no query string is present then the file `examples/defaultExample.alogic` is used.  
 
-The endpoint `/compile` is used to submit an Alogic file for compilation. The client side code POSTs to this with the Alogic source. The data type must be `text/alogic`. The server responds with text which is either the Verilog results or a list of errors. In either case the results are suitable to be directly displayed in the right-hand-side fiddle window. If the compilation generates multiple Verilog files, they are concatenated with a ==>FILENAME<== before each file, in the same way as `tail`.
+The endpoint `/compile` is used to submit an Alogic file for compilation. The client side code POSTs to this with the Alogic source. The data type must be `text/alogic`. The server responds with text which is either the Verilog results or a list of errors. In either case the results are suitable to be directly displayed in the right-hand-side fiddle window. If the compilation generates multiple Verilog files, they are concatenated with a ==> FILENAME <== before each file, in the same way as `tail`.
 
 The endpoint `/privacy` serves a web page with privacy information.
 
 Tour of Files
 -------------
 
-| Directory/file        | Description |
-|-----------------------|-------------|
-|examples/              | Files that can be chosen as initial text in the source window |
-|static/                | Static files served to the client. Contains static HTML files and subdirectories for `css`, `images` and `js` files. Look particularly at the main client-side Javascript, `js/index.js` |
-|test/                  | Short Alogic files used in testing |
-|views/                 | Contains main page HTML template `index.mustache` |
-|alogic*                | Script to run Alogic compiler. Also used as `./alogic update` to install/update Alogic from Github |
-|app.js                 | Main code of afiddle server |
-|bower.json             | Control file for `bower` which installs/updates client side Javascript libraries. Contains the names and version numbers of all the libraries used. Libraries are downloaded to the directory `bower_components` |
-|docker_interactive.sh  | Shell script to start an interactive shell session with an afiddle Docker container |
-|docker_run.sh          | Shell script to run an afiddle Docker container locally and tunnel it to a public web address. Used for testing only |
-|google_cloud_deploy.md | Note on how to deploy afiddle Docker container to Google Cloud Kubernetes Engine (GKE)
-|LICENSE                | Details of license for afiddle. It is licensed under the BSD 3-clause license with attribution (https://spdx.org/licenses/BSD-3-Clause-Attribution.html) | 
-|Makefile               | Build file using `make` |
-|package.json           | Control file for Node package manager `npm`. Contains the names and version numbers of all the packages used. Packages are downloaded to the directory `node_modules`. Note that the Monaco editor is downloaded as a package, but is actually used as a client-side library |
-|README.md              | This file |
-|run.sh*                | Shell script to start both the server and an `ngrok` session to tunnel it to a public web address |
-|screenshot.png         | Screenshot used in this README |
-|screenshot_log.png     | Screenshot used in `google_cloud_deploy.md` showing Stackdriver logging in Google Console |
+| Directory/file              | Description |
+|-----------------------------|-------------|
+|examples/                    | Files that can be chosen as initial text in the source window |
+|front_end/                   | Files used in front-end - i.e. on client side |
+|front_end/static/            | Static files served to the client. Contains static HTML files and subdirectories for `css`, `images` and `js` files. Look particularly at the main client-side Javascript, `js/index.js` |
+|front_end/views/             | Contains main page HTML template `index.mustache` |
+|front_end/packgage.json      | Control file for `npm` which installs/updates client side Javascript libraries. Contains the names and version numbers of all the libraries used. Libraries are downloaded to the directory `front_end/node_modules` |
+|front_end/packgage-lock.json | Control file for `npm`. Defines the exact tree that should be created |
+|test/                        | Short Alogic files used in testing |
+|alogic*                      | Script to run Alogic compiler. Also used as `./alogic update` to install/update Alogic from Github |
+|app.js                       | Main code of afiddle server |
+|docker_interactive.sh        | Shell script to start an interactive shell session with an afiddle Docker container |
+|docker_run.sh                | Shell script to run an afiddle Docker container locally and tunnel it to a public web address. Used for testing only |
+|google_cloud_deploy.md       | Note on how to deploy afiddle Docker container to Google Cloud Kubernetes Engine (GKE)
+|LICENSE                      | Details of license for afiddle. It is licensed under the BSD 3-clause license with attribution (https://spdx.org/licenses/BSD-3-Clause-Attribution.html) | 
+|Makefile                     | Build file using `make` |
+|package.json                 | Control file for Node package manager `npm`. Contains the names and version numbers of all the server packages used. Packages are downloaded to the directory `node_modules` |
+|packgage-lock.json           | Control file for `npm`. Defines the exact tree that should be created |
+|README.md                    | This file |
+|run.sh*                      | Shell script to start both the server and an `ngrok` session to tunnel it to a public web address |
+|screenshot.png               | Screenshot used in this README |
+|screenshot_log.png           | Screenshot used in `google_cloud_deploy.md` showing Stackdriver logging in Google Console |
 
 Directories created during installation and in operation:
 
 | Directory/file        | Description |
 |-----------------------|-------------|
-|node_modules/          | Node.js packages used by server |
-|bower_components/      | Javascript libraries used by client-side code |
 |alogic_install/        | Directory where the Alogic compiler is installed |
-|runpen/                | Directory used to store source files entered in the web page so they can be compiled by the Alogic compiler. Each compile request creates a new directory with a 4-digit number, such as `0002`; the number increments with each request. Within this the server  creates an `alogic` subdirectory and a `verilog` subdirectory. The source code is then stored as `input.alogic` in the `alogic` directory. Once the compilation is completed, the numbered directory is deleted |
+|front_end/node_modules | Javascript libraries used by client-side code |
 |logs/                  | Server log files. Logs are stored in a 5-file rotating sequence. |
+|node_modules/          | Node.js packages used by server |
+|runpen/                | Directory used to store source files entered in the web page so they can be compiled by the Alogic compiler. Each compile request creates a new directory with a 4-digit number, such as `0002`; the number increments with each request. Within this the server  creates an `alogic` subdirectory and a `verilog` subdirectory. The source code is then stored as `input.alogic` in the `alogic` directory. Once the compilation is completed, the numbered directory is deleted |
