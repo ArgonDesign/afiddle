@@ -1,0 +1,15 @@
+fsm adding {
+  param uint P = 3;
+  in  u8 p_i;
+  out u8 p_o;
+
+  void main() {
+    u8 x = p_i;
+    gen for (u8 N = 0 ; N <= P ; N++) {
+      x += N;
+      fence;
+    }
+    p_o.write(x);
+    fence;
+  }
+}

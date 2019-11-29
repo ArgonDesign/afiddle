@@ -1,6 +1,9 @@
 fsm vectors {
   out wire u4[8] va_out;
   out wire u3[6][9] vb_out;
+  out wire u4[2] vs1_out;
+  out wire u3[3][9] vs2_out;
+  out wire u3[4] vs3_out;
 
   void main() {
 
@@ -27,10 +30,19 @@ fsm vectors {
     vb[0]++;      // Increment 'vb[0]' as a 27 bit variable
     vb[0][0]++;   // Increment the 3-bit primitive element
 
+    // Vectors can be sliced, producing a vector of the same dimension but
+    // smaller size in the first dimension:
+    u4[2]    vs1 = va[3:2];     // va[3:2] has type u4[2]
+    u3[3][9] vs2 = vb[0+:3];    // vb[0+:3] has type u3[3][9]
+    u3[4]    vs3 = vb[5][9-:4]; // vb[5][9-:4] has type u3[4]
+
     // [
-    // If va and vb are not used, they will be optimised out:
+    // If va, vb, vs1, vs2, vs3 are not used, they will be optimised out:
     va_out = va;
     vb_out = vb;
+    vs1_out = vs1;
+    vs2_out = vs2;
+    vs3_out = vs3;
     fence;
     // ]
 

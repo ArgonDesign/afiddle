@@ -1,0 +1,25 @@
+fsm foo {
+  param bool A = true;
+  param bool B = true;
+
+  in bool i;
+  out bool a;
+  out bool b;
+  out bool c;
+
+  void main() {
+    gen if (A) {
+      bool x = i;
+      a = x;
+    }
+    gen if (B) {
+      bool x = i;
+      b = x;
+    }
+
+    // The following would raise an ambiguity error if A and B have the same truth value.
+    // c = x;
+
+    fence;
+  }
+}

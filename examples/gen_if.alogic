@@ -1,0 +1,17 @@
+fsm delay_or_inverter {
+  // Try changing the default value of P to false
+  param bool P = true;
+  in  bool p_i;
+  out bool p_o;
+
+  void main() {
+    gen if (P) {
+      p_o = ~p_i;
+    } else {
+      fence;
+      fence;
+      p_o = p_i;
+    }
+    fence;
+  }
+}

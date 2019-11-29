@@ -1,0 +1,15 @@
+fsm scoping {
+  param uint P = 2;
+
+  in  bool p_i;
+  out bool p_o;
+
+  void main() {
+    bool b = p_i;
+    gen for (uint N = 0 ; N <= P; N++) {
+      bool c = ~b; // Separate copy of 'c' in each iteration.
+      p_o.write(c);
+      fence;
+    }
+  }
+}

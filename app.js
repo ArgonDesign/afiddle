@@ -274,10 +274,11 @@ app.get('/', function (req, res) {
       exampleText = ''
     })
     .then(function () {
-      // Place text in quotes, converting newlines to '\n's and escaping quotes
+      // Escape backslashes and quotes. Convert newlines to '\n's and put final text in quotes
       var txt = exampleText
-        .replace(/\n/g, '\\n')
+        .replace(/\\/g, '\\\\')
         .replace(/"/g, '\\"')
+        .replace(/\n/g, '\\n')
       var quotedExampleText = '"' + txt + '"'
       res.render('index', { version: alogicVersion, exampleText: quotedExampleText })
     })

@@ -1,0 +1,41 @@
+network dictident_adder_tree {
+  param uint INPUTS = 8; // Number of inputs (must be power of 2)
+  param uint IWIDTH = 4; // Width of each input
+
+  const uint LEVELS = $clog2(INPUTS);
+
+  const uint OWIDTH = IWIDTH + LEVELS;
+
+  gen for (uint n < INPUTS) {
+    in uint(IWIDTH) p_i#[n];
+  }
+  out uint(OWIDTH) p_o;
+
+  fsm adder {
+    param uint IW;
+    in uint(IW) a;
+    in uint(IW) b;
+    out uint(IW+1) s;
+
+    void main() {
+      s = 'a + 'b;
+      fence;
+    }
+  }
+
+  gen for (uint level < LEVELS) {
+    gen for (uint n < (INPUTS >> level + 1)) {
+      add#[level, n] = new adder(IW = IWIDTH + level);
+      gen if (level == 0) {
+        p_i#[2*n + 0] -> add#[level, n].a;
+        p_i#[2*n + 1] -> add#[level, n].b;
+      } else {
+        add#[level - 1, 2*n + 0].s -> add#[level, n].a;
+        add#[level - 1, 2*n + 1].s -> add#[level, n].b;
+      }
+    }
+    gen if (level == LEVELS-1) {
+      add#[level, 0].s -> p_o;
+    }
+  }
+}

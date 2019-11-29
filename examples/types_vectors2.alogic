@@ -7,16 +7,16 @@ fsm vectors {
   out wire u8 b2;
   out wire u8 c1;
   out wire u8 c2;
-  out wire u8 d1;
-  out wire u8 d2;
-  out wire u8 e1;
-  out wire u8 e2;
-  out wire u8 f1;
-  out wire u8 f2;
-  out wire u8 g1;
-  out wire u8 g2;
-  out wire u8 h1;
-  out wire u8 h2;
+  out wire u2 d1;
+  out wire u2 d2;
+  out wire u2 e1;
+  out wire u2 e2;
+  out wire u2 f1;
+  out wire u2 f2;
+  out wire u1 g1;
+  out wire u1 g2;
+  out wire u1 h1;
+  out wire u1 h2;
   // ]
 
   void main() {

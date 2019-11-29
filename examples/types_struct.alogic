@@ -1,13 +1,13 @@
 struct point_t {
   u16 x;
   u16 y;
-};
+}
 
 struct rect_t {
   point_t topleft;
   u8 width;
   u8 height;
-};
+}
 
 fsm foo {
   // if rect1, rect2, rect3 are not used, they will be optimised out.

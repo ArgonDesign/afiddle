@@ -1,0 +1,20 @@
+network optional_buffer {
+  param bool BUFFERED = true;
+
+  in  sync bool i;
+  out sync bool o;
+
+  gen if (BUFFERED) {
+    // This will cause 'o' to have an output register by default
+    // acting as a buffer and causing a one cycle delay
+    new fsm delay {
+      void main() {
+        o.write(i);
+        fence;
+      }
+    }
+  } else {
+    // Wire straight through
+    i -> o;
+  }
+}

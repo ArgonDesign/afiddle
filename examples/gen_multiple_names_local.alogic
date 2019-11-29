@@ -1,0 +1,37 @@
+fsm multiple_names {
+  in bool x;
+  out bool b;
+  out bool c;
+
+  void main() {
+
+    gen for (uint n < 8) {
+      bool a#[n];
+      gen if (n == 0) {
+        a#[n] = x;
+      } else {
+        a#[n] = ~a#[n-1];
+      }
+      gen if (n == 7) {
+        b = a#[n];
+      }
+    }
+
+    gen for (uint n < 8) {
+      bool a#[n];
+      gen if (n == 0) {
+        a#[n] = x;
+      } else {
+        a#[n] = ~a#[n-1];
+      }
+      gen if (n == 7) {
+        c = a#[n];
+      }
+    }
+
+    // Error if we try to access a outside the generate scope
+    // c = a#[0];
+
+    fence;
+  }
+}

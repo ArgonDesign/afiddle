@@ -1,12 +1,12 @@
 struct point_t {
   u10 x;
   u10 y;
-};
+}
 
 struct rect_t {
   point_t top_left;
   point_t bottom_right;
-};
+}
 
 fsm foo {
   in sync rect_t r;

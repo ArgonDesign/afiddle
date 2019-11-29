@@ -1,21 +1,22 @@
 fsm nofencefunc {
-  u3 s_l2 = 1;
-  out u8 s;
+  in u3 s_l2;
+  out u8 o;
+  u8 s;
 
   void main () {
     s = 8'd1 << s_l2;
     // ...
-    s_l2 = 2;
+    o = s;
     fence;
 
     s = 8'd1 << s_l2;
     // ...
-    s_l2 = 3;
+    o = s + 1;
     fence;
 
     s = 8'd1 << s_l2;
     // ...
-    s_l2 = 1;
+    o = s + 2;
     fence;
   }
 }

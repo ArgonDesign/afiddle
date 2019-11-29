@@ -1,0 +1,16 @@
+fsm range {
+  void main() {
+    u8 x = 0;
+
+    gen for (u3 i < 8) {
+      x += 'i;
+    }
+
+    // The following loop would generate a compiler error
+    // gen for (u3 i = 0 ; i < 8 ; i++) {
+    //   x += 'i;
+    // }
+
+    fence;
+  }
+}

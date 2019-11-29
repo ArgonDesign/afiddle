@@ -1,0 +1,16 @@
+fsm twiddle {
+  param uint P = 5;
+
+  in  u8 p_i;
+  out u8 p_o;
+
+  void main() {
+    case (p_i) {
+      gen for (u8 N = 1; N < P; N++) {
+        N : p_o.write(p_i ^ N);
+      }
+      default: p_o.write(p_i);
+    }
+    fence;
+  }
+}

@@ -1,13 +1,13 @@
 struct point_t {
   u10 x;
   u10 y;
-};
+}
 
 struct req_t {
   u32 addr;
   u3  len;
   u4  prop;
-};
+}
 
 fsm foo {
   in sync point_t p;

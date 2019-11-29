@@ -1,7 +1,7 @@
 fsm foo {
-  bool cond;
-  u4 a;
-  u4 b;
+  in bool cond;
+  out wire u4 a;
+  out wire u4 b;
 
   void main() {
 

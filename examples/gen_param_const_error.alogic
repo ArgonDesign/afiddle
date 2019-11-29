@@ -1,0 +1,22 @@
+network foo {
+  param bool P = true;
+  out u8 o;
+
+  // The following would raise a compiler error
+  // gen if (P) {
+  //   param bool Q; // Error, must appear directly under containing entity
+  // }
+
+  gen if (P) {
+    fsm nested {
+      param uint Q; // OK, it is directly under the containing entity,
+                    // even though the declaration is under a 'gen'
+
+      out uint(Q) nested_o;
+    }
+
+    nested_e = new nested(Q = 8);
+    nested_e.nested_o -> o;
+  }
+
+}

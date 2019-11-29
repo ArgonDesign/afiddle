@@ -1,0 +1,13 @@
+fsm toggle {
+  param bool SLOW = true;
+
+  out bool p_o = false;
+
+  void main() {
+    gen if (SLOW) {
+      fence;
+    }
+    p_o = ~p_o;
+    fence;
+  }
+}

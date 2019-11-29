@@ -1,6 +1,6 @@
 fsm foo {
   u4 a;
-  u4 b;
+  u4[4] b;
   bool sign;
   u5 abs;
 

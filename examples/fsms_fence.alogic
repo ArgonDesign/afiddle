@@ -1,6 +1,7 @@
 fsm fenceblock {
-  u3 s_l2 = 1;
-  out u8 s;
+  in u3 s_l2;
+  out u8 o;
+  u8 s;
 
   fence {
     // this line will be inserted at the start of every state case
@@ -9,15 +10,15 @@ fsm fenceblock {
 
   void main () {
     // ...
-    s_l2 = 2;
+    o = s;
     fence;
 
     // ...
-    s_l2 = 3;
+    o = s + 1;
     fence;
 
     // ...
-    s_l2 = 4;
+    o = s + 2;
     fence;
   }
 }

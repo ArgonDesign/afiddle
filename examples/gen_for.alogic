@@ -1,0 +1,14 @@
+fsm invert_a_lot {
+  param uint P = 3;
+  in  bool p_i;
+  out bool p_o;
+
+  void main() {
+    bool b = p_i;
+    gen for (uint N = 0 ; N < P ; N++) {
+      b = ~b;
+    }
+    p_o = b;
+    fence;
+  }
+}

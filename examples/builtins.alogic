@@ -1,17 +1,19 @@
 struct foo_t {
     bool start;
     u5 data;
-};
+}
 
 fsm foo {
-  out u158 concat;
+  out u116 concat;
+
+  const uint A = 10;
 
   void main() {
 
     u11 arg;
 
     // uint $clog2(arg);
-    u16 size = $clog2(arg);
+    u16 size = $clog2(A);
 
     // int(N) $signed(expr);
     // uint(N) $unsigned(expr);
@@ -47,6 +49,5 @@ fsm foo {
     concat = {size,arg_signed,arg_unsigned,bits1,bits2,top,a,b1,b2,c1,c2,d1,d2};
     fence;
     // ]
-
   }
 }

@@ -1,4 +1,5 @@
 fsm foo {
+  out wire u3 concat;
 
   void main() {
 
@@ -10,5 +11,11 @@ fsm foo {
     u2 d = c[2:1];
     fence;
 
+    // [
+    // If b and d are not used, they will be optimised out:
+    concat = {b, d};
+    // ]
+
+    fence;
   }
 }

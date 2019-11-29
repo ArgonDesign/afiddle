@@ -1,0 +1,27 @@
+fsm multiple_names_error {
+  const uint A = 0;
+  const uint B = 3;
+
+  void main() {
+
+    {
+      gen for (uint n < 8) {
+        bool a#[0, n];
+        bool a#[1, n]; // ERROR: redefinition of 'a'
+      }
+    }
+
+    {
+      gen for (uint n < 8) {
+        bool a#[0, n];
+      }
+      gen for (uint n < 8) {
+        bool a#[1, n];
+      }
+
+      a#[A, B] = true; // ERROR: 'a' is ambiguous
+    }
+
+    fence;
+  }
+}

@@ -5,9 +5,10 @@
 fsm magical {
   u4 a = MAGIC;
   out u4 b;
-  
+
   void main() {
     // ...
+    b = a;
     fence;
   }
 }

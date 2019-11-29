@@ -1,0 +1,11 @@
+fsm range {
+  void main() {
+    u8 x = 0;
+
+    gen for (uint N < 4) {
+      x += N;
+    }
+
+    fence;
+  }
+}

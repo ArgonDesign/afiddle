@@ -1,10 +1,10 @@
 (* liftsrams *)
 fsm sfifo {
-  param u32 WIDTH = 8;
-  param u32 DEPTH = 2;
+  param uint WIDTH = 8;
+  param uint DEPTH = 2;
 
   // Number of address bits
-  const u32 ABITS = $clog2(DEPTH);
+  const uint ABITS = $clog2(DEPTH);
 
   // The input port
   in  sync ready               uint(WIDTH) p_in;
@@ -20,7 +20,7 @@ fsm sfifo {
   uint(ABITS) wrptr = @zx(ABITS, 1'b0);
 
   // The highers valid poitner
-  const u32 MAXPTR = DEPTH - 1;
+  const uint MAXPTR = DEPTH - 1;
 
   // The actual storage SRAM
   sram wire uint(WIDTH) storage[DEPTH];

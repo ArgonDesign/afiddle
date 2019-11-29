@@ -1,0 +1,9 @@
+network connect_N_backwards {
+  param uint N = 4;
+
+  gen for (uint n < N) {
+    in  bool i#[n];
+    out bool o#[n];
+    i#[n] -> o#[N - 1 - n];
+  }
+}

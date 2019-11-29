@@ -1,0 +1,9 @@
+network connect_2 {
+  gen for (uint n < 2) {
+    in  bool i#[n];
+    out bool o#[n];
+  }
+
+  i#[0] -> o#[0];
+  i#[1] -> o#[1];
+}

@@ -3,7 +3,7 @@ fsm foo {
 
   void main() {
     a = 5'd0;
-    while (a<4'd5){
+    while (a < 5'd5){
       a++;
     }
     fence;

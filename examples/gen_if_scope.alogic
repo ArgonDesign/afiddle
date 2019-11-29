@@ -1,0 +1,19 @@
+fsm signed_or_not {
+  param bool SIGNED = true;
+
+  void main() {
+    gen if (SIGNED) {
+      i8 a;
+      i8 b;
+      i16 c;
+    } else {
+      u8 a;
+      u8 b;
+      u16 c;
+    }
+
+    c = 'a * 'b; // Signed or unsigned variables depending on SIGNED
+
+    fence;
+  }
+}

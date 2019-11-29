@@ -1,0 +1,14 @@
+fsm dictionary_identifiers {
+  out bool p_o;
+
+  gen for (uint N < 8) {
+    bool a#[N];
+  }
+
+  void main() {
+    gen for (uint N < 8) {
+      p_o = a#[N];
+      fence;
+    }
+  }
+}

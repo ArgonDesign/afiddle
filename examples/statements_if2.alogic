@@ -1,8 +1,8 @@
 fsm foo {
   in u4 p_in_0;
-  u4 a;
-  u4 b;
-  u4 c;
+  out wire u4 a;
+  out wire u4 b;
+  out wire u4 c;
 
   void main() {
 
