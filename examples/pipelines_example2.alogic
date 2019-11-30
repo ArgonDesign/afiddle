@@ -2,15 +2,15 @@ struct pipeline_stage0_o_t {
   u32 mul0;
   u32 mul1;
   u32 mul2;
-  u32 mul3;    
-}; 
+  u32 mul3;
+}
 
 typedef pipeline_stage0_o_t pipeline_stage1_i_t;
 
 struct pipeline_stage1_o_t {
   u33 sum10;
   u33 sum32;
-};
+}
 
 typedef pipeline_stage1_o_t pipeline_stage2_i_t;
 

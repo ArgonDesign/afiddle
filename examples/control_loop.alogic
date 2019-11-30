@@ -15,10 +15,10 @@ fsm foo {
      loop {      // V Cycle 1 - A 'loop' is always entered, but the cycle ends
        f++;      // | Cycle 2
        g++;      // | Cycle 2
-       break;    //  V Cycle 2 ends - Iterate only once for this example
+       break;    // V Cycle 2 ends - Iterate only once for this example
      }
 
-     d.write(a);  // | Cycle 3
+     d.write(a); // | Cycle 3
      e--;        // | Cycle 3
      goto foo;   // V Cycle 3 ends
   }

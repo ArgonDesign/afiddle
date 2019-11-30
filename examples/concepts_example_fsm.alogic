@@ -28,7 +28,7 @@ fsm foo {
 
   void doit() {
     // At this point we are in state 3
-    ...
+    // ...
     return; // Control returns to the state which follows the call site, state 2.
   }
 }

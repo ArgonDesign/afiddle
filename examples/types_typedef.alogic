@@ -2,12 +2,18 @@
 typedef u19 mytype_t; // 'mytype_t' is defined to be equivalent to u19
 
 fsm foo {
+  out mytype_t a_out;
+
   void main() {
 
     // A variable 'a' of type 'mytype_t'
     // Will be compiled into a 19-bit flip flop (with a_q and a_d)
     mytype_t a;
 
+    // [
+    // If a is not used, it will be optimized out
+    a_out = a;
     fence;
+    // ]
   }
 }
