@@ -1,6 +1,6 @@
 # *******************************************************************************
 # Argon Design Ltd. Project P8009 Alogic
-# (c) Copyright 2017-8 Argon Design Ltd. All rights reserved.
+# (c) Copyright 2017-20 Argon Design Ltd. All rights reserved.
 #
 # Module : afiddle
 # Author : Steve Barlow
@@ -12,11 +12,11 @@
 #
 # make build        (This is the default if you just run make.) Firstly,
 #                   downloads and installs the node.js packages used such as
-#                   Express and Monaco editor. These are stored in node_modules.
+#                   Express and Winston. These are stored in node_modules.
 #                   Then downloads and installs the client side Javascript
-#                   libraries used using bower. These are stored in
-#                   bower_components. Then downloads alogic into the
-#                   alogic_install directory and builds it.
+#                   libraries such as the Monaco Editor and jQuery. These are
+#                   stored in front_end/node_modules. Then downloads alogic
+#                   into the alogic_install directory and builds it.
 #
 #                   Once built, the server can be run by executing app.js, either
 #                   with ./app.js, node app.js or npm start. See app.js for
@@ -34,9 +34,8 @@
 #
 # make dockerbuild  Create a docker image named afiddle. The recipe is
 #                   specified in Dockerfile. Note that this invokes make build
-#                   and make build includes options to allow building as root,
-#                   so it can be used in the Dockerfile. The image is build
-#                   without using the cache to assure its integrity.
+#                   within the container. The image is build without using the
+#                   cache to assure its integrity.
 #
 # make dockerclean  Kill all running Docker containers, remove all images and
 #                   all containers. Note that this is much more invasive than
